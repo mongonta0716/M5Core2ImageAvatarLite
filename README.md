@@ -7,7 +7,7 @@
 # 概要
 
 　あらかじめ用意した画像ファイル（BMP)とJSONファイルの設定を組み合わせてAvatarを作成できるアプリです。
-
+[![M5Core2ImageAvatarLite](https://img.youtube.com/vi/gR_Rzfq-Dh8/0.jpg)](https://www.youtube.com/watch?v=gR_Rzfq-Dh8)
 # 開発環境
 - VSCode(Ver.1.55.1)
 - PlatformIO
