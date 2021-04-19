@@ -3,6 +3,7 @@
 
 #include <ArduinoJson.h> // https://github.com/bblanchon/ArduinoJson
 #include <SD.h>
+#include <SPIFFS.h>
 
 #define RIGHT true
 #define LEFT  false
@@ -85,7 +86,7 @@ class ImageAvatarConfig {
     public:
         ImageAvatarConfig();
         ~ImageAvatarConfig();
-        void loadConfig(const char *json_filename);
+        void loadConfig(fs::FS& fs, const char *json_filename);
 
         void printAllParameters(); 
         spcommon_s getSpriteCommonParameters();

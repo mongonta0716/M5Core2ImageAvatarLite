@@ -7,11 +7,11 @@ ImageAvatarConfig::~ImageAvatarConfig(){
 
 }
 
-void ImageAvatarConfig::loadConfig(const char *filename) {
-    File file = SD.open(filename);
+void ImageAvatarConfig::loadConfig(fs::FS& fs, const char *filename) {
+    File file = fs.open(filename);
     DynamicJsonDocument doc(4096);
     DeserializationError error = deserializeJson(doc, file);
-    if (error) { 
+    if (error) {
         Serial.printf("json file read error: %s", filename);
     }
 

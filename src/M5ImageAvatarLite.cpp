@@ -3,14 +3,15 @@
 
 ImageAvatarLite::ImageAvatarLite(void) {
     _expression = 0;    
+    _fs = nullptr;
 }
 ImageAvatarLite::~ImageAvatarLite(void) {
     deleteSprites();
 }
 
 
-void ImageAvatarLite::loadConfig(const char* filename) {
-    _config.loadConfig(filename);
+void ImageAvatarLite::loadConfig(fs::FS& fs, const char* filename) {
+    _config.loadConfig(fs, filename);
 }
 
 lgfx::rgb565_t ImageAvatarLite::convertColorCode(uint32_t code) {
@@ -21,10 +22,11 @@ lgfx::rgb565_t ImageAvatarLite::convertColorCode(uint32_t code) {
     return lgfx::color565(r, g, b);
 }
 
-void ImageAvatarLite::init(LGFX *gfx, const char* filename, bool is_change,
+void ImageAvatarLite::init(LGFX *gfx, fs::FS& fs, const char* filename, bool is_change,
                            uint8_t expression) {
-    loadConfig(filename);
+    loadConfig(fs, filename);
     this->_gfx = gfx;
+    _fs = &fs;
     this->_filename = filename;
     _lcd_sp      = new LGFX_Sprite(_gfx);
     _head_sp     = new LGFX_Sprite(&_lcd_sp);
@@ -49,7 +51,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
         deleteSprites();
     }
     Serial.println("initSprites");
-    loadConfig(_filename);
+    loadConfig(*_fs, _filename);
     _config.printAllParameters();
     _spcommon = _config.getSpriteCommonParameters();
     params_fixed_s p_head = _config.getHeadParameters();

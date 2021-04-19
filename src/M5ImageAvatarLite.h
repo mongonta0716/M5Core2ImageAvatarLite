@@ -25,7 +25,7 @@ class ImageAvatarLite
         uint8_t _expression;    // 感情
         uint32_t _draw_time;
 
-
+        fs::FS *_fs;
         const char* _filename;
         ImageAvatarConfig _config;
         spcommon_s _spcommon;
@@ -34,7 +34,7 @@ class ImageAvatarLite
 
         void initSprites(bool is_change);
         void deleteSprites();
-        void loadConfig(const char* filename);
+        void loadConfig(fs::FS& fs, const char* filename);
         void execDraw();
 
         void drawHead();
@@ -47,7 +47,7 @@ class ImageAvatarLite
         ~ImageAvatarLite(void);
 
         void createSprite();
-        void init(LGFX *gfx, const char* filename, bool is_change, uint8_t expression = 0);
+        void init(LGFX *gfx, fs::FS& fs, const char* filename, bool is_change, uint8_t expression = 0);
         void drawAll();
         void setMoveParameter(move_param_s mv);
         void setExpression(uint8_t expression);
