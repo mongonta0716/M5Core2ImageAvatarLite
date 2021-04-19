@@ -49,13 +49,13 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
  サンプルの画像ファイルは全て24bitBMPファイルでWindows標準のペイントソフトを利用しています。
  ### 固定パーツ（頭の画像ファイル）
  1. 頭用BMP<br>背景となる画像ファイル320x240もしくは傾けるのであれば少し余裕が必要です。
- ![image](sdcard_files/bmp/head.bmp)
+ ![image](data/bmp/head.bmp)
  ### 表情で変わるパーツ(右目と口)
  開いた状態と閉じた状態の<b>２種類×表情の数</b>だけ必要です。(同じパーツを流用も可能)
  1. 開いた目と閉じた「右目」のパーツ（左目は右目を反転させて表示します。）<br>サンプルではnormal,sad,angryの3種類用意してあります。<br>
- ![image](sdcard_files/bmp/eye_op_normal.bmp) ![image](sdcard_files/bmp/eye_cl_normal.bmp)
+ ![image](data/bmp/eye_op_normal.bmp) ![image](data/bmp/eye_cl_normal.bmp)
  1. 開いた口と閉じた口のパーツ<br>サンプルでは開いた口normal,sad,angryの3種類と閉じた口は共通パーツとして用意してあります。<br>
- ![image](sdcard_files/bmp/mouth_op_normal.bmp) ![image](sdcard_files/bmp/mouth_cl_normal.bmp)
+ ![image](data/bmp/mouth_op_normal.bmp) ![image](data/bmp/mouth_cl_normal.bmp)
 
 目と口の透明化したい部分は透明色(M5ImageAvatar.json)で塗りつぶします。サンプルでは緑（0x00FF00）になっています。
 
