@@ -25,9 +25,22 @@
  4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2のみとします。
 
 # 使い方
- SDカードのルートにsdcard_filesにあるフォルダをコピーして、プログラムを書き込むとAvatarが起動します。
+1. SDカードのルートにsdcard_filesにあるbmpフォルダをコピー
+1. dataにあるM5AvatarConfig.jsonをSDカードのjsonフォルダにコピー<br>jsonフォルダが無ければ作成してください。
+1. プログラムを書き込むとAvatarが起動します。
+1. 口は開閉を繰り返すだけです。BtnCを押すと表情が切り替わります。
+
+## SDカード上に必要なファイル
  /bmp/にはBMPファイル(サンプルでは全部で11ファイル)
  /json/にはM5AvatarConfig.json
+
+# JSONファイルの置き場所について
+ main.cppの下記の行をコメントアウトするとSPIFFSの/M5AvatarConfig.jsonを参照するようになります。SPIFFSに置くと開発するときにVSCodeからUploadできるようになり、SDカードを抜き差しして書き換える手間が省けます。
+ ```
+ #define FILE_SYSTEM_SD
+ ```
+ ## VSCodeからのデータUpload方法（英語）
+ [ESP32 with VS Code and PlatformIO: Upload Files to Filesystem (SPIFFS)](https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/)
 
  # カスタマイズ方法
  自分で24bitか16bitのBMPファイルを用意すると好きな画像をAvatar化することが可能です。
