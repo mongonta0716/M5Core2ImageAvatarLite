@@ -1,9 +1,10 @@
 #include "M5ImageAvatarLite.h"
 
 
-ImageAvatarLite::ImageAvatarLite(void) {
+ImageAvatarLite::ImageAvatarLite(fs::FS& json_fs, fs::FS& bmp_fs) {
     _expression = 0;    
-    _fs = nullptr;
+    _json_fs = &json_fs;
+    _bmp_fs = &bmp_fs;
 }
 ImageAvatarLite::~ImageAvatarLite(void) {
     deleteSprites();
@@ -22,11 +23,10 @@ lgfx::rgb565_t ImageAvatarLite::convertColorCode(uint32_t code) {
     return lgfx::color565(r, g, b);
 }
 
-void ImageAvatarLite::init(LGFX *gfx, fs::FS& fs, const char* filename, bool is_change,
+void ImageAvatarLite::init(LGFX *gfx, const char* filename, bool is_change,
                            uint8_t expression) {
-    loadConfig(fs, filename);
+    loadConfig(*_json_fs, filename);
     this->_gfx = gfx;
-    _fs = &fs;
     this->_filename = filename;
     _lcd_sp      = new LGFX_Sprite(_gfx);
     _head_sp     = new LGFX_Sprite(&_lcd_sp);
@@ -51,7 +51,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
         deleteSprites();
     }
     Serial.println("initSprites");
-    loadConfig(*_fs, _filename);
+    loadConfig(*_json_fs, _filename);
     _config.printAllParameters();
     _spcommon = _config.getSpriteCommonParameters();
     params_fixed_s p_head = _config.getHeadParameters();
@@ -59,7 +59,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
     _head_sp.setColorDepth(_spcommon.color_depth);
     _head_sp.setSwapBytes(_spcommon.swap_bytes);
     _head_sp.createSprite(p_head.picinfo.w, p_head.picinfo.h);
-    _head_sp.drawBmpFile(SD, p_head.filename, 0, 0);
+    _head_sp.drawBmpFile(*_bmp_fs, p_head.filename, 0, 0);
 
     params_mouth_s p_mouth = _config.getMouthParameters(_expression);
     params_eyes_s p_eyes = _config.getEyesParameters(_expression);
@@ -67,22 +67,22 @@ void ImageAvatarLite::initSprites(bool is_change) {
     _eye_op_sp.setPsram(_spcommon.psram);
     _eye_op_sp.setColorDepth(_spcommon.color_depth);
     _eye_op_sp.setSwapBytes(_spcommon.swap_bytes);
-    _eye_op_sp.createFromBmpFile(SD, p_eyes.filename_op);
+    _eye_op_sp.createFromBmpFile(*_bmp_fs, p_eyes.filename_op);
 
     _eye_cl_sp.setPsram(_spcommon.psram);
     _eye_cl_sp.setColorDepth(_spcommon.color_depth);
     _eye_cl_sp.setSwapBytes(_spcommon.swap_bytes);
-    _eye_cl_sp.createFromBmpFile(SD, p_eyes.filename_cl);
+    _eye_cl_sp.createFromBmpFile(*_bmp_fs, p_eyes.filename_cl);
 
     _mouth_op_sp.setPsram(_spcommon.psram);
     _mouth_op_sp.setColorDepth(_spcommon.color_depth);
     _mouth_op_sp.setSwapBytes(_spcommon.swap_bytes);
-    _mouth_op_sp.createFromBmpFile(SD, p_mouth.filename_op);
+    _mouth_op_sp.createFromBmpFile(*_bmp_fs, p_mouth.filename_op);
 
     _mouth_cl_sp.setPsram(_spcommon.psram);
     _mouth_cl_sp.setColorDepth(_spcommon.color_depth);
     _mouth_cl_sp.setSwapBytes(_spcommon.swap_bytes);
-    _mouth_cl_sp.createFromBmpFile(SD, p_mouth.filename_cl);
+    _mouth_cl_sp.createFromBmpFile(*_bmp_fs, p_mouth.filename_cl);
 
     // 描画用スプライトの準備（createSpriteのみ） 
     _mouth_sp.setPsram(_spcommon.psram);

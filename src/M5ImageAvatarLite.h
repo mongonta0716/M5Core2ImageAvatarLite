@@ -25,7 +25,8 @@ class ImageAvatarLite
         uint8_t _expression;    // 感情
         uint32_t _draw_time;
 
-        fs::FS *_fs;
+        fs::FS *_json_fs;   // 設定ファイルの収納場所(SD or SPIFFS)
+        fs::FS *_bmp_fs;    // ビットマップファイルの収納場所（SD or SPIFFS）
         const char* _filename;
         ImageAvatarConfig _config;
         spcommon_s _spcommon;
@@ -43,11 +44,12 @@ class ImageAvatarLite
         lgfx::rgb565_t convertColorCode(uint32_t code);
 
     public:
-        ImageAvatarLite(void);
+        // ImageAvatarLite(void);
+        ImageAvatarLite(fs::FS& json_fs, fs::FS& bmp_fs);
         ~ImageAvatarLite(void);
 
         void createSprite();
-        void init(LGFX *gfx, fs::FS& fs, const char* filename, bool is_change, uint8_t expression = 0);
+        void init(LGFX *gfx, const char* filename, bool is_change, uint8_t expression = 0);
         void drawAll();
         void setMoveParameter(move_param_s mv);
         void setExpression(uint8_t expression);

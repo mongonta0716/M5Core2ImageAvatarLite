@@ -6,19 +6,17 @@
 // デバッグしたいときは下記の１行コメントアウトしてください。
 // #define DEBUG
 
-// JSONファイルを置く場所を切り替え
-// FILE_SYSTEM_SDを有効にするとSDカード上の/json/M5AvatarConfig.jsonを参照します。
-// 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
-#define FILE_SYSTEM_SD
 
 static LGFX gfx;
 
-#ifdef FILE_SYSTEM_SD
+// JSONファイルとBMPファイルを置く場所を切り替え
+// 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
+fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
+
 const char* json_file = "/json/M5AvatarConfig.json";
-#else
-const char* json_file = "/M5AvatarConfig.json";
-#endif
-ImageAvatarLite avatar;
+ImageAvatarLite avatar(json_fs, bmp_fs);
+
 uint8_t expression = 0;
 
 // Multi Threads Settings
@@ -139,12 +137,8 @@ void setup() {
   gfx.fillScreen(TFT_BLACK);
   gfx.println("HelloWorld");
 
-#ifdef FILE_SYSTEM_SD
-  avatar.init(&gfx, SD, json_file, false, 0);
-#else
   SPIFFS.begin();
-  avatar.init(&gfx, SPIFFS, json_file, false, 0);
-#endif
+  avatar.init(&gfx, json_file, false, 0);
   startThreads();
 }
 

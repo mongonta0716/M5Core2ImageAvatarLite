@@ -25,20 +25,20 @@
  4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2のみとします。
 
 # 使い方
-1. SDカードのルートにsdcard_filesにあるbmpフォルダをコピー
-1. dataにあるM5AvatarConfig.jsonをSDカードのjsonフォルダにコピー<br>jsonフォルダが無ければ作成してください。
+1. SDカードのルートにdataにあるフォルダ(bmp,json)をコピー
 1. プログラムを書き込むとAvatarが起動します。
 1. 口は開閉を繰り返すだけです。BtnCを押すと表情が切り替わります。
 
 ## SDカード上に必要なファイル
- /bmp/にはBMPファイル(サンプルでは全部で11ファイル)
+ /bmp/にはBMPファイル(サンプルでは全部で11ファイル)<br>
  /json/にはM5AvatarConfig.json
 
-# JSONファイルの置き場所について
- main.cppの下記の行をコメントアウトするとSPIFFSの/M5AvatarConfig.jsonを参照するようになります。SPIFFSに置くと開発するときにVSCodeからUploadできるようになり、SDカードを抜き差しして書き換える手間が省けます。
- ```
- #define FILE_SYSTEM_SD
- ```
+# JSONファイルとBMPファイルの置き場所について
+ main.cppの下記の行を変更するとJSONファイルとBMPファイルの収納場所をSDかSPIFFSか指定できます。SPIFFSに置くと開発するときにVSCodeからUploadできるようになり、SDカードを抜き差しして書き換える手間が省けます。
+```
+fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
+```
  ## VSCodeからのデータUpload方法（英語）
  [ESP32 with VS Code and PlatformIO: Upload Files to Filesystem (SPIFFS)](https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/)
 
