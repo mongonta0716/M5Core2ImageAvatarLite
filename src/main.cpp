@@ -11,8 +11,8 @@ static LGFX gfx;
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
-fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
-fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
+fs::FS json_fs = SPIFFS; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SPIFFS; // BMPファイルの収納場所(SPIFFS or SD)
 
 const char* json_file = "/json/M5AvatarConfig.json";
 ImageAvatarLite avatar(json_fs, bmp_fs);

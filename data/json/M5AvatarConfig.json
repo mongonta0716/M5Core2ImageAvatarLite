@@ -18,23 +18,23 @@
     "fixed_parts": [
         {
             "parts": "body",
-            "x": -10,
-            "y": -10,
-            "w": 340,
-            "h": 260,
-            "filename": "/bmp/head.bmp"
+            "x": 0,
+            "y": 0,
+            "w": 320,
+            "h": 240,
+            "filename": "/bmp_puipui/head.bmp"
         }
     ],
     "mouth": [
         {
             "normal": {
                 "x": 160,
-                "y": 200,
+                "y": 210,
                 "w": 60,
                 "h": 60,
                 "filename": {
-                    "open": "/bmp/mouth_op_normal.bmp",
-                    "close": "/bmp/mouth_cl_normal.bmp"
+                    "open": "/bmp_puipui/mouth_op_normal.bmp",
+                    "close": "/bmp_puipui/mouth_cl_normal.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
@@ -78,15 +78,15 @@
     "eye": [
         {
             "normal": {
-                "rx": 120,
-                "ry": 100,
-                "lx": 200,
-                "ly": 100,
-                "w": 40,
-                "h": 60,
+                "rx": 130,
+                "ry": 120,
+                "lx": 190,
+                "ly": 120,
+                "w": 52,
+                "h": 52,
                 "filename": {
-                    "open": "/bmp/eye_op_normal.bmp",
-                    "close": "/bmp/eye_cl_normal.bmp"
+                    "open": "/bmp_puipui/eye_op_normal.bmp",
+                    "close": "/bmp_puipui/eye_cl_normal.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,

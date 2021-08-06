@@ -68,11 +68,12 @@ void ImageAvatarLite::initSprites(bool is_change) {
     _eye_op_sp.setColorDepth(_spcommon.color_depth);
     _eye_op_sp.setSwapBytes(_spcommon.swap_bytes);
     _eye_op_sp.createFromBmpFile(*_bmp_fs, p_eyes.filename_op);
-
+    Serial.printf("eye_sp_width:%d\n", _eye_op_sp.width());
     _eye_cl_sp.setPsram(_spcommon.psram);
     _eye_cl_sp.setColorDepth(_spcommon.color_depth);
     _eye_cl_sp.setSwapBytes(_spcommon.swap_bytes);
     _eye_cl_sp.createFromBmpFile(*_bmp_fs, p_eyes.filename_cl);
+    Serial.printf("eye_sp_width:%d\n", _eye_cl_sp.width());
 
     _mouth_op_sp.setPsram(_spcommon.psram);
     _mouth_op_sp.setColorDepth(_spcommon.color_depth);
@@ -117,8 +118,8 @@ void ImageAvatarLite::execDraw() {
 void ImageAvatarLite::drawHead() {
     params_fixed_s p_head = _config.getHeadParameters();
     _head_sp.pushRotateZoom(&_lcd_sp, 
-                            p_head.picinfo.x + (p_head.picinfo.w/2),
-                            p_head.picinfo.y + (p_head.picinfo.h/2) + _mv.breath,
+                            p_head.picinfo.x + (uint16_t)(p_head.picinfo.w/2),
+                            p_head.picinfo.y + (uint16_t)(p_head.picinfo.h/2) + _mv.breath,
                             0, 1, 1, _tp_color);
     
 }
