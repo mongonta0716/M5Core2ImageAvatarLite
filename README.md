@@ -1,5 +1,5 @@
 # M5Core2ImageAvatarLite
- ImageAvatarLite for M5Stack Core2
+ ImageAvatarLite for M5Stack Core2 and M5Stack Fire
 
 # 開発途中です。
 ドキュメントも行き届いていません。その点はご了承ください。
@@ -21,7 +21,7 @@
 ★ESP32-Chimera-CoreはボタンCの制御しか使っていないので必須ではありません。
 
 # 対応機種
- メモリの都合上PSRAMが必要なのでM5Stack Core2のみを対象にしています。
+ メモリの都合上PSRAMが必要なのでM5Stack Core2とM5Stack Fireのみを対象にしています。
  4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2のみとします。
 
 # 使い方
