@@ -3,10 +3,20 @@
 #include <ESP32-Chimera-Core.h>
 #include "M5ImageAvatarLite.h"
 
+// サーボを利用する場合は下記の1行をコメントアウトしてください。
+#define USE_SERVO
+
 // デバッグしたいときは下記の１行コメントアウトしてください。
 // #define DEBUG
-
-
+#ifdef USE_SERVO
+  #include "ServoEasing.h"
+  #define SERVO1_PIN 21
+  #define SERVO2_PIN 22 
+  ServoEasing Servo1;
+  ServoEasing Servo2;
+  #define START_DEGREE_VALUE_1 85
+  #define START_DEGREE_VALUE_2 85
+#endif
 static LGFX gfx;
 
 // JSONファイルとBMPファイルを置く場所を切り替え
@@ -25,6 +35,9 @@ TaskHandle_t blinkTaskHandle;
 TaskHandle_t breathTaskHandle;
 TaskHandle_t lipsyncTaskHandle;
 SemaphoreHandle_t xMutex = NULL;
+
+
+
 
 void printDebug(const char *str) {
 #ifdef DEBUG
@@ -140,6 +153,15 @@ void setup() {
   SPIFFS.begin();
   avatar.init(&gfx, json_file, false, 0);
   startThreads();
+
+#ifdef USE_SERVO
+  if (Servo1.attach(SERVO1_PIN, START_DEGREE_VALUE_1) == INVALID_SERVO) {
+    Serial.println(F("Error attaching servo"));
+  }
+  if (Servo2.attach(SERVO2_PIN, START_DEGREE_VALUE_2) == INVALID_SERVO) {
+    Serial.println(F("Error attaching servo"));
+  }
+#endif
 }
 
 void loop() {
@@ -155,6 +177,23 @@ void loop() {
     avatar.setExpression(expression);
     vTaskResume(drawTaskHandle);
     Serial.printf("Resume\n");
+  } 
+#ifdef USE_SERVO  
+  for (int i = 0; i < 2; ++i) {
+
+    Servo1.startEaseToD(105, 1000);
+    Servo2.startEaseToD(45, 500);
+        // areInterruptsActive() calls yield for the ESP8266 boards
+    while (ServoEasing::areInterruptsActive()) {
+      ; // no delays here to avoid break between forth and back movement
+    }
+    Servo1.startEaseToD(65, 1000);
+    Servo2.startEaseToD(85, 500);
+    while (ServoEasing::areInterruptsActive()) {
+      ; // no delays here to avoid break between forth and back movement
+    }
   }
-  vTaskDelay(100);
+  Servo1.setEasingType(EASE_LINEAR);
+  Servo2.setEasingType(EASE_LINEAR);
+#endif
 }
