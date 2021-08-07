@@ -29,6 +29,18 @@
 1. プログラムを書き込むとAvatarが起動します。
 1. 口は開閉を繰り返すだけです。BtnCを押すと表情が切り替わります。
 
+# サーボとの連携
+[stack-chan](https://github.com/meganetaaan/stack-chan)との組み合わせてサーボを使って動かす機能もあります。
+
+サーボを利用しないときはmain.cppの下記の行をコメントにしてください。
+
+```
+// サーボを利用しない場合は下記の1行をコメントにしてください。
+#define USE_SERVO
+```
+
+[![M5Core2ImageAvatarLite](https://img.youtube.com/vi/07fEke_r3Xc/0.jpg)](https://www.youtube.com/watch?v=07fEke_r3Xc)
+
 ## SDカード上に必要なファイル
  /bmp/にはBMPファイル(サンプルでは全部で11ファイル)<br>
  /json/にはM5AvatarConfig.json

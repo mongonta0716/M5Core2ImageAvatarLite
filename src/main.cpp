@@ -3,7 +3,7 @@
 #include <ESP32-Chimera-Core.h>
 #include "M5ImageAvatarLite.h"
 
-// サーボを利用する場合は下記の1行をコメントアウトしてください。
+// サーボを利用しない場合は下記の1行をコメントにしてください。
 #define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
