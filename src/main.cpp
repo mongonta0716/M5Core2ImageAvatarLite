@@ -121,13 +121,18 @@ void lipsync(void *args) {
 void moveServo(void *args) {
   for (;;) {
     if (servo_enable) {
-      Servo1.setSpeed(30);
-      Servo2.setSpeed(30);
-      Servo1.easeTo(105);
-      Servo2.easeTo(45);
-          // areInterruptsActive() calls yield for the ESP8266 boards
-      Servo1.easeTo(65);
-      Servo2.easeTo(85);
+      
+      Servo1.startEaseToD(105, 1000);
+      Servo2.startEaseToD(45, 500);
+      while (ServoEasing::areInterruptsActive()) {
+        vTaskDelay(33);
+      }
+
+      Servo1.startEaseToD(65, 1000);
+      Servo2.startEaseToD(85, 500);
+      while (ServoEasing::areInterruptsActive()) {
+        vTaskDelay(33);
+      }
     }
     Servo1.setEasingType(EASE_LINEAR);
     Servo2.setEasingType(EASE_LINEAR);
@@ -197,13 +202,9 @@ void setup() {
   M5.begin(true, true, true, false, false);
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
-  gfx.fillScreen(TFT_BLACK);
-  gfx.println("HelloWorld");
-  gfx.fillScreen(TFT_BLUE);
 
   avatar.init(&gfx, json_file, false, 0);
   startThreads();
-  
 
 #ifdef USE_SERVO
 

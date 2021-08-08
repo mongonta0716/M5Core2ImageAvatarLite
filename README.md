@@ -31,12 +31,20 @@
 
 # サーボとの連携
 [stack-chan](https://github.com/meganetaaan/stack-chan)との組み合わせてサーボを使って動かす機能もあります。
-
+ButtonBを押すとサーボが動き、もう一度ButtonBを押すとサーボが停止します。
 サーボを利用しないときはmain.cppの下記の行をコメントにしてください。
 
 ```
 // サーボを利用しない場合は下記の1行をコメントにしてください。
 #define USE_SERVO
+```
+
+## サーボの接続について
+サーボの接続はデフォルトは21, 22となっています。別のピンを利用する場合はmain.cppの下記の行を変更してください。
+
+```
+  #define SERVO1_PIN 21
+  #define SERVO2_PIN 22 
 ```
 
 [![M5Core2ImageAvatarLite](https://img.youtube.com/vi/07fEke_r3Xc/0.jpg)](https://www.youtube.com/watch?v=07fEke_r3Xc)
