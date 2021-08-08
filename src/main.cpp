@@ -7,7 +7,7 @@
 #define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
-// #define DEBUG
+#define DEBUG
 #ifdef USE_SERVO
   #include "ServoEasing.h"
   #define SERVO1_PIN 21
@@ -16,13 +16,15 @@
   ServoEasing Servo2;
   #define START_DEGREE_VALUE_1 85
   #define START_DEGREE_VALUE_2 85
+  bool servo_enable = false; // サーボを動かすかどうか
+  TaskHandle_t moveservoTaskHangle;
 #endif
 static LGFX gfx;
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
-fs::FS json_fs = SPIFFS; // JSONファイルの収納場所(SPIFFS or SD)
-fs::FS bmp_fs  = SPIFFS; // BMPファイルの収納場所(SPIFFS or SD)
+fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 
 const char* json_file = "/json/M5AvatarConfig.json";
 ImageAvatarLite avatar(json_fs, bmp_fs);
@@ -55,6 +57,11 @@ void printFreeHeap() {
     char buf[250];
     sprintf(buf, "Free Heap Size = %d\n", esp_get_free_heap_size());
     printDebug(buf);
+    sprintf(buf, "Total PSRAM Size = %d\n", ESP.getPsramSize());
+    printDebug(buf);
+    sprintf(buf, "Free PSRAM Size = %d\n", ESP.getFreePsram());
+    printDebug(buf);
+
 }
 
 // Start----- Task functions ----------
@@ -109,6 +116,26 @@ void lipsync(void *args) {
       }
   }
 }
+
+#ifdef USE_SERVO
+void moveServo(void *args) {
+  for (;;) {
+    if (servo_enable) {
+      Servo1.setSpeed(30);
+      Servo2.setSpeed(30);
+      Servo1.easeTo(105);
+      Servo2.easeTo(45);
+          // areInterruptsActive() calls yield for the ESP8266 boards
+      Servo1.easeTo(65);
+      Servo2.easeTo(85);
+    }
+    Servo1.setEasingType(EASE_LINEAR);
+    Servo2.setEasingType(EASE_LINEAR);
+    vTaskDelay(100);
+  }
+}
+#endif
+
 void startThreads() {
   printDebug("----- startThreads -----");
   if (xMutex != NULL) {
@@ -118,7 +145,7 @@ void startThreads() {
                          NULL,
                          5,
                          &drawTaskHandle,
-                         1);// tskNO_AFFINITY); // Core 1を指定しないと不安定
+                         1); //tskNO_AFFINITY); // Core 1を指定しないと不安定
     xTaskCreateUniversal(breath,
                          "breath",
                          2048,
@@ -140,6 +167,28 @@ void startThreads() {
                          8,
                          &lipsyncTaskHandle,
                          tskNO_AFFINITY);
+#ifdef USE_SERVO
+    if (Servo1.attach(SERVO1_PIN, START_DEGREE_VALUE_1) == INVALID_SERVO) {
+      Serial.println(F("Error attaching servo"));
+    }
+    if (Servo2.attach(SERVO2_PIN, START_DEGREE_VALUE_2) == INVALID_SERVO) {
+      Serial.println(F("Error attaching servo"));
+    }
+
+    xTaskCreateUniversal(moveServo,
+                         "moveservo",
+                         4096,
+                         NULL,
+                         9,
+                         &moveservoTaskHangle,
+                         tskNO_AFFINITY);
+    // サーボの動きはservo_enableで管理
+    if (servo_enable) {
+      vTaskResume(moveservoTaskHangle);
+    } else {
+      vTaskSuspend(moveservoTaskHangle);
+    }
+#endif
   }
 }
 
@@ -147,26 +196,34 @@ void setup() {
   gfx.init();
   M5.begin(true, true, true, false, false);
   xMutex = xSemaphoreCreateMutex();
+  SPIFFS.begin();
   gfx.fillScreen(TFT_BLACK);
   gfx.println("HelloWorld");
+  gfx.fillScreen(TFT_BLUE);
 
-  SPIFFS.begin();
   avatar.init(&gfx, json_file, false, 0);
   startThreads();
+  
 
 #ifdef USE_SERVO
-  if (Servo1.attach(SERVO1_PIN, START_DEGREE_VALUE_1) == INVALID_SERVO) {
-    Serial.println(F("Error attaching servo"));
-  }
-  if (Servo2.attach(SERVO2_PIN, START_DEGREE_VALUE_2) == INVALID_SERVO) {
-    Serial.println(F("Error attaching servo"));
-  }
+
 #endif
 }
 
 void loop() {
   M5.update();
   printFreeHeap();
+#ifdef USE_SERVO
+  if (M5.BtnB.wasPressed()) {
+    servo_enable = !servo_enable;
+    Serial.printf("BtnB was pressed servo_enable:%d", servo_enable);
+    if (servo_enable) {
+      vTaskResume(moveservoTaskHangle);
+    } else {
+      vTaskSuspend(moveservoTaskHangle);
+    }
+  }
+#endif
   if (M5.BtnC.wasPressed()) {
     expression++;
     if (expression > 2) {
@@ -178,22 +235,5 @@ void loop() {
     vTaskResume(drawTaskHandle);
     Serial.printf("Resume\n");
   } 
-#ifdef USE_SERVO  
-  for (int i = 0; i < 2; ++i) {
-
-    Servo1.startEaseToD(105, 1000);
-    Servo2.startEaseToD(45, 500);
-        // areInterruptsActive() calls yield for the ESP8266 boards
-    while (ServoEasing::areInterruptsActive()) {
-      ; // no delays here to avoid break between forth and back movement
-    }
-    Servo1.startEaseToD(65, 1000);
-    Servo2.startEaseToD(85, 500);
-    while (ServoEasing::areInterruptsActive()) {
-      ; // no delays here to avoid break between forth and back movement
-    }
-  }
-  Servo1.setEasingType(EASE_LINEAR);
-  Servo2.setEasingType(EASE_LINEAR);
-#endif
+  vTaskDelay(100);
 }
