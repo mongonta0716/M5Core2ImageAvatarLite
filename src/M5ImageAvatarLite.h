@@ -10,15 +10,15 @@ class ImageAvatarLite
 {
     private:
         LGFX *_gfx;
-        LGFX_Sprite _head_sp;     // 頭（背景）用スプライト
-        LGFX_Sprite _eye_op_sp;   // 開いた右目のスプライト
-        LGFX_Sprite _eye_cl_sp;   // 閉じた右目のスプライト
-        LGFX_Sprite _mouth_op_sp; // 開いた口のスプライト
-        LGFX_Sprite _mouth_cl_sp; // 閉じた口のスプライト
-        LGFX_Sprite _mouth_sp;    // 口描画用スプライト
-        LGFX_Sprite _eye_l_sp;    // 左目描画用スプライト
-        LGFX_Sprite _eye_r_sp;    // 右目描画用スプライト
-        LGFX_Sprite _lcd_sp;      // LCDに最終的に描画する直前のスプライト
+        LGFX_Sprite *_head_sp;     // 頭（背景）用スプライト
+        LGFX_Sprite *_eye_op_sp;   // 開いた右目のスプライト
+        LGFX_Sprite *_eye_cl_sp;   // 閉じた右目のスプライト
+        LGFX_Sprite *_mouth_op_sp; // 開いた口のスプライト
+        LGFX_Sprite *_mouth_cl_sp; // 閉じた口のスプライト
+        LGFX_Sprite *_mouth_sp;    // 口描画用スプライト
+        LGFX_Sprite *_eye_l_sp;    // 左目描画用スプライト
+        LGFX_Sprite *_eye_r_sp;    // 右目描画用スプライト
+        LGFX_Sprite *_lcd_sp;      // LCDに最終的に描画する直前のスプライト
         move_param_s _mv;
 
         bool _is_change;
@@ -58,7 +58,7 @@ class ImageAvatarLite
         void setBlink(float ratio, bool isRight);
         void setAngle(float angle);
         void setMouthOpen(float ratio);
-        
+
         float getMouthOpen();
         move_param_s getMoveParameter();
 
