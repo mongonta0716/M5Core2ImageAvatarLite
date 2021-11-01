@@ -2,8 +2,7 @@
 #define _IMAGEAVATARCONFIG_H_
 
 #include <ArduinoJson.h> // https://github.com/bblanchon/ArduinoJson
-#include <SD.h>
-#include <SPIFFS.h>
+#include <ESP32-Chimera-Core.h>
 
 #define RIGHT true
 #define LEFT  false
@@ -88,7 +87,7 @@ class ImageAvatarConfig {
         ~ImageAvatarConfig();
         void loadConfig(fs::FS& fs, const char *json_filename);
 
-        void printAllParameters(); 
+        void printAllParameters();
         spcommon_s getSpriteCommonParameters();
         params_fixed_s getHeadParameters();
         params_mouth_s getMouthParameters(uint8_t expression);
