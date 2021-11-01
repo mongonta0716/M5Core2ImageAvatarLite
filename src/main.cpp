@@ -19,7 +19,7 @@
   bool servo_enable = false; // サーボを動かすかどうか
   TaskHandle_t moveservoTaskHangle;
 #endif
-static LGFX gfx;
+LGFX &gfx ( M5.Lcd );
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
