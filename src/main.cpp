@@ -23,7 +23,7 @@
   TaskHandle_t moveservoTaskHangle;
 #endif
 
-#define gfx M5.Lcd // aliasing is better than spawning two instances of LGFX
+LGFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
