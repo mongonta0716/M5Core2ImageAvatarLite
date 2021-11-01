@@ -1,6 +1,9 @@
-#include <Arduino.h>
-#include <lgfx.h>
 #include <ESP32-Chimera-Core.h>
+
+#define SDU_APP_PATH "/M5Core2AvatarLite.bin" // title for SD-Updater UI
+#define SDU_APP_NAME "Image Avater Lite" // title for SD-Updater UI
+#include <M5StackUpdater.h> // https://github.com/tobozo/M5Stack-SD-Updater/
+
 #include "M5ImageAvatarLite.h"
 
 // サーボを利用しない場合は下記の1行をコメントにしてください。
@@ -11,7 +14,7 @@
 #ifdef USE_SERVO
   #include "ServoEasing.hpp"
   #define SERVO1_PIN 13
-  #define SERVO2_PIN 14 
+  #define SERVO2_PIN 14
   ServoEasing Servo1;
   ServoEasing Servo2;
   #define START_DEGREE_VALUE_1 85
@@ -19,7 +22,8 @@
   bool servo_enable = false; // サーボを動かすかどうか
   TaskHandle_t moveservoTaskHangle;
 #endif
-static LGFX gfx;
+
+#define gfx M5.Lcd // aliasing is better than spawning two instances of LGFX
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
@@ -121,7 +125,7 @@ void lipsync(void *args) {
 void moveServo(void *args) {
   for (;;) {
     if (servo_enable) {
-      
+
       Servo1.startEaseToD(105, 1000);
       Servo2.startEaseToD(45, 500);
       while (ServoEasing::areInterruptsActive()) {
@@ -198,8 +202,8 @@ void startThreads() {
 }
 
 void setup() {
-  gfx.init();
   M5.begin(true, true, true, false, false);
+  checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
 
@@ -235,6 +239,6 @@ void loop() {
     avatar.setExpression(expression);
     vTaskResume(drawTaskHandle);
     Serial.printf("Resume\n");
-  } 
+  }
   vTaskDelay(100);
 }

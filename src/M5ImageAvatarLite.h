@@ -1,9 +1,6 @@
 #ifndef _IMAGEAVATARLITE_H_
 #define _IMAGEAVATARLITE_H_
 
-#include <SD.h>
-#include <SPIFFS.h>
-#include <lgfx.h>
 #include "ImageAvatarConfig.h"
 
 class ImageAvatarLite
