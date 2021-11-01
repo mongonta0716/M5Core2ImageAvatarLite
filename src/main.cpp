@@ -7,11 +7,11 @@
 #define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
-#define DEBUG
+//#define DEBUG
 #ifdef USE_SERVO
-  #include "ServoEasing.h"
-  #define SERVO1_PIN 21
-  #define SERVO2_PIN 22 
+  #include "ServoEasing.hpp"
+  #define SERVO1_PIN 13
+  #define SERVO2_PIN 14 
   ServoEasing Servo1;
   ServoEasing Servo2;
   #define START_DEGREE_VALUE_1 85

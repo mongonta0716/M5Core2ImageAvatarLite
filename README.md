@@ -14,7 +14,7 @@
 
 # 必要なライブラリ
 バージョンについては[platformio.ini](platformio.ini)を見てください。
-- [LovyanGFX](https://github.com/lovyan03/LovyanGFX)
+- [LovyanGFX](https://github.com/lovyan03/LovyanGFX)<br>LovyanGFXはVer.0.3.12までしか動きません。0.4.0以上ではメモリが足りないようで画面が表示されなくなります。
 - [ArduinoJSON](https://github.com/bblanchon/ArduinoJson)
 - [ESP32-Chimera-Core](https://github.com/tobozo/ESP32-Chimera-Core)
 
