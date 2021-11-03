@@ -195,7 +195,7 @@ void startThreads() {
 
 void setup() {
   M5.begin(true, true, true, false, false);
-  // checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
+  checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
   M5.Lcd.setBrightness(100);
