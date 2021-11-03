@@ -22,36 +22,18 @@
 
 # 対応機種
  メモリの都合上PSRAMが必要なのでM5Stack Core2とM5Stack Fireのみを対象にしています。
- 4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2のみとします。
+ 4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2及びFireのみとします。
 
 # 使い方
 1. SDカードのルートにdataにあるフォルダ(bmp,json)をコピー
 1. プログラムを書き込むとAvatarが起動します。
 1. 口は開閉を繰り返すだけです。BtnCを押すと表情が切り替わります。
 
-# サーボとの連携
-[stack-chan](https://github.com/meganetaaan/stack-chan)との組み合わせてサーボを使って動かす機能もあります。
-ButtonBを押すとサーボが動き、もう一度ButtonBを押すとサーボが停止します。
-サーボを利用しないときはmain.cppの下記の行をコメントにしてください。
-
-```
-// サーボを利用しない場合は下記の1行をコメントにしてください。
-#define USE_SERVO
-```
-
-## サーボの接続について
-サーボの接続はデフォルトは21, 22となっています。別のピンを利用する場合はmain.cppの下記の行を変更してください。
-
-```
-  #define SERVO1_PIN 21
-  #define SERVO2_PIN 22 
-```
-
-[![M5Core2ImageAvatarLite](https://img.youtube.com/vi/07fEke_r3Xc/0.jpg)](https://www.youtube.com/watch?v=07fEke_r3Xc)
 
 ## SDカード上に必要なファイル
- /bmp/にはBMPファイル(サンプルでは全部で11ファイル)<br>
- /json/にはM5AvatarConfig.json
+ 
+ 1. /bmp_slime/<br>BMPファイル(サンプルのbmp_slimeでは全部で11ファイル)<br>
+ 2. /json/<br>M5AvatarLiteConfig.json<br>M5AvatarLiteServoConfig.json(※サーボを使う場合)
 
 # JSONファイルとBMPファイルの置き場所について
  main.cppの下記の行を変更するとJSONファイルとBMPファイルの収納場所をSDかSPIFFSか指定できます。SPIFFSに置くと開発するときにVSCodeからUploadできるようになり、SDカードを抜き差しして書き換える手間が省けます。
@@ -69,15 +51,15 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
  サンプルの画像ファイルは全て24bitBMPファイルでWindows標準のペイントソフトを利用しています。
  ### 固定パーツ（頭の画像ファイル）
  1. 頭用BMP<br>背景となる画像ファイル320x240もしくは傾けるのであれば少し余裕が必要です。
- ![image](data/bmp/head.bmp)
+ ![image](data/bmp_slime/head.bmp)
  ### 表情で変わるパーツ(右目と口)
  開いた状態と閉じた状態の<b>２種類×表情の数</b>だけ必要です。(同じパーツを流用も可能)
  1. 開いた目と閉じた「右目」のパーツ（左目は右目を反転させて表示します。）<br>サンプルではnormal,sad,angryの3種類用意してあります。<br>
- ![image](data/bmp/eye_op_normal.bmp) ![image](data/bmp/eye_cl_normal.bmp)
+ ![image](data/bmp_slime/eye_op_normal.bmp) ![image](data/bmp_slime/eye_cl_normal.bmp)
  1. 開いた口と閉じた口のパーツ<br>サンプルでは開いた口normal,sad,angryの3種類と閉じた口は共通パーツとして用意してあります。<br>
- ![image](data/bmp/mouth_op_normal.bmp) ![image](data/bmp/mouth_cl_normal.bmp)
+ ![image](data/bmp_slime/mouth_op_normal.bmp) ![image](data/bmp_slime/mouth_cl_normal.bmp)
 
-目と口の透明化したい部分は透明色(M5ImageAvatar.json)で塗りつぶします。サンプルでは緑（0x00FF00）になっています。
+目と口の透明化したい部分は透明色(M5AvatarLiteConfig.json)で塗りつぶします。サンプルでは緑（0x00FF00）になっています。
 
 ## JSONファイルの編集
 下記を参考にして、JSONファイルを書き換えてください。
@@ -106,7 +88,7 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
             "y": -10,                             // 頭部パーツの開始y座標
             "w": 340,                             // 頭部パーツの幅
             "h": 260,                             // 頭部パーツの高さ
-            "filename": "/bmp/head.bmp"        // 頭部パーツのファイル名
+            "filename": "/bmp_slime/head.bmp"        // 頭部パーツのファイル名
         }
     ],
     "mouth": [                                    // 口のパーツ設定
@@ -117,8 +99,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 60,    // 口パーツの幅
                 "h": 60,    // 口パーツの高さ
                 "filename": {
-                    "open": "/bmp/mouth_op_normal.bmp",  // 開いた口
-                    "close": "/bmp/mouth_cl_normal.bmp"  // 閉じた口
+                    "open": "/bmp_slime/mouth_op_normal.bmp",  // 開いた口
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"  // 閉じた口
                 },
                 "minScaleX": 1.0,     // 未使用
                 "maxScaleX": 1.0,     // 未使用
@@ -133,8 +115,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 60,
                 "h": 60,
                 "filename": {
-                    "open": "/bmp/mouth_op_sad.bmp",
-                    "close": "/bmp/mouth_cl_normal.bmp"
+                    "open": "/bmp_slime/mouth_op_sad.bmp",
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
@@ -149,8 +131,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 60,
                 "h": 60,
                 "filename": {
-                    "open": "/bmp/mouth_op_angry.bmp",
-                    "close": "/bmp/mouth_cl_normal.bmp"
+                    "open": "/bmp_slime/mouth_op_angry.bmp",
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
@@ -169,8 +151,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 40,       //       目の幅
                 "h": 60,       //       目の高さ      
                 "filename": {
-                    "open": "/bmp/eye_op_normal.bmp", // 開いた目のファイル名
-                    "close": "/bmp/eye_cl_normal.bmp" // 閉じた目のファイル名
+                    "open": "/bmp_slime/eye_op_normal.bmp", // 開いた目のファイル名
+                    "close": "/bmp_slime/eye_cl_normal.bmp" // 閉じた目のファイル名
                 },
                 "minScaleX": 1.0,     // 未使用
                 "maxScaleX": 1.0,     // 未使用
@@ -187,8 +169,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 40,
                 "h": 60,
                 "filename": {
-                    "open": "/bmp/eye_op_sad.bmp",
-                    "close": "/bmp/eye_cl_sad.bmp"
+                    "open": "/bmp_slime/eye_op_sad.bmp",
+                    "close": "/bmp_slime/eye_cl_sad.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
@@ -205,8 +187,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "w": 40,
                 "h": 60,
                 "filename": {
-                    "open": "/bmp/eye_op_angry.bmp",
-                    "close": "/bmp/eye_cl_angry.bmp"
+                    "open": "/bmp_slime/eye_op_angry.bmp",
+                    "close": "/bmp_slime/eye_cl_angry.bmp"
                 },
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
@@ -253,6 +235,37 @@ head.bmpをhead_potato.bmpに変更すると、〇ルカーっぽい何かにな
 # 参考にしたリポジトリ
 - [m5stack-avatar](https://github.com/meganetaaan/m5stack-avatar)
 - [M5Stack_WebRadio_Avator](https://github.com/robo8080/M5Stack_WebRadio_Avator)
+
+# サーボについて
+main.cpp冒頭の#define USE_SERVOのコメントを外すとサーボを利用できます。2021/11現在では[ｽﾀｯｸﾁｬﾝ](https://github.com/meganetaaan/stack-chan)での利用を想定しています。
+
+## サーボの初期設定
+X軸とY軸の2軸（ｽﾀｯｸﾁｬﾝのパン(x)とチルト(y)）で利用できます。/json/フォルダにM5AvatarLiteServoConfig.jsonを置いてください。
+
+[![M5Core2ImageAvatarLite](https://img.youtube.com/vi/07fEke_r3Xc/0.jpg)](https://www.youtube.com/watch?v=07fEke_r3Xc)
+
+
+## M5AvatarLiteServoConfig.jsonの内容
+```
+{
+    "initial_settings": {
+        "x_axis": {            // パン
+            "pin"    : 13,     // 水平方向のサーボピン番号
+            "center" : 85,     // サーボの中心（初期位置）
+            "lower"  : 0,      // サーボの下限角度
+            "uppder"  : 180     // サーボの上限角度
+        },
+        "y_axis": {            // チルト
+            "pin"    : 14,     // 垂直方向のサーボ品番号
+            "center" : 60,     // サーボの中心(初期位置)
+            "lower"  : 30,     // サーボの下限角度
+            "upper"  : 90      // サーボの上限角度
+        }
+
+    },
+    "servo_enable" : "false"   // 起動時にサーボを動かすかどうかのフラグ（未使用）
+}
+```
 
 # 謝辞
 このソフトを作成するにあたり、動きや構造の元となった[M5Stack-Avatar](https://github.com/meganetaaan/m5stack-avatar)を作成・公開してくださった[meganetaaan](https://github.com/meganetaaan)氏に感謝いたします。

@@ -17,6 +17,7 @@ class ImageAvatarServo
         servo_initial_s* _servo_init[AXIS_NUMBER];
         fs::FS *_json_fs;   // 設定ファイルの収納場所(SD or SPIFFS)
         const char* _filename;
+        int checkParam(uint8_t servo_no, int degree);
 
 
     public:

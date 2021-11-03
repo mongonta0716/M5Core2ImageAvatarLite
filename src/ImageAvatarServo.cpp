@@ -19,6 +19,17 @@ ImageAvatarServo::ImageAvatarServo(fs::FS& json_fs, const char* filename) {
 ImageAvatarServo::~ImageAvatarServo(void) {
 }
 
+int ImageAvatarServo::checkParam(uint8_t servo_no, int degree) {
+    Serial.printf("checkParam:%d", degree);
+    if (_servo_init[servo_no]->position_upper < degree) {
+        return _servo_init[servo_no]->position_upper;
+    } 
+    if (_servo_init[servo_no]->position_lower > degree) {
+        return _servo_init[servo_no]->position_lower;
+    }
+    return degree;
+}
+
 void ImageAvatarServo::init() {
   _config.loadConfig(*_json_fs, _filename);
   _config.printAllParameters();
@@ -36,7 +47,7 @@ void ImageAvatarServo::attachAll() {
 }
 
 void ImageAvatarServo::move(uint8_t servo_no, int degree, uint_fast16_t millis_move) {
-    _servo[servo_no].startEaseToD(degree, millis_move);
+    _servo[servo_no].startEaseToD(checkParam(servo_no, degree), millis_move);
     while(ServoEasing::areInterruptsActive()) {
       vTaskDelay(33);
     }
@@ -44,8 +55,8 @@ void ImageAvatarServo::move(uint8_t servo_no, int degree, uint_fast16_t millis_m
 
 void ImageAvatarServo::moveXY(int degree_x, int degree_y,
                         uint_fast16_t millis_move_x, uint_fast16_t millis_move_y) {
-    _servo[AXIS_X].startEaseToD(degree_x, millis_move_x);
-    _servo[AXIS_Y].startEaseToD(degree_y, millis_move_y);
+    _servo[AXIS_X].startEaseToD(checkParam(AXIS_X, degree_x), millis_move_x);
+    _servo[AXIS_Y].startEaseToD(checkParam(AXIS_Y, degree_y), millis_move_y);
     while(ServoEasing::areInterruptsActive()) {
       vTaskDelay(33);
     }

@@ -3,14 +3,14 @@
         "x_axis": {
             "pin"    : 13,
             "center" : 85,
-            "upper"  : 0,
-            "lower"  : 180
+            "lower"  : 0,
+            "upper"  : 180
         },
         "y_axis": {  
             "pin"    : 14,
             "center" : 60,
-            "upper"  : 30,
-            "lower"  : 90
+            "lower"  : 30,
+            "upper"  : 90
         }
 
     },

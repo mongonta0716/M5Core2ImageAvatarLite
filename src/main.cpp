@@ -5,10 +5,9 @@
 #include <M5StackUpdater.h> // https://github.com/tobozo/M5Stack-SD-Updater/
 
 #include "M5ImageAvatarLite.h"
-#include "ImageAvatarServo.h"
 
 // サーボを利用しない場合は下記の1行をコメントにしてください。
-#define USE_SERVO
+//#define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
@@ -24,8 +23,9 @@ const char* avatar_json = "/json/M5AvatarLiteConfig.json";
 const char* servo_json = "/json/M5AvatarLiteServoConfig.json"; 
 ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_SERVO
+  #include "ImageAvatarServo.h"
   ImageAvatarServo servo(json_fs, servo_json);
-  bool servo_enable = false; // サーボを動かすかどうか
+  bool servo_enable = true; // サーボを動かすかどうか
   TaskHandle_t servoloopTaskHangle;
 #endif
 
@@ -37,9 +37,6 @@ TaskHandle_t blinkTaskHandle;
 TaskHandle_t breathTaskHandle;
 TaskHandle_t lipsyncTaskHandle;
 SemaphoreHandle_t xMutex = NULL;
-
-
-
 
 void printDebug(const char *str) {
 #ifdef DEBUG
@@ -105,22 +102,39 @@ void blink(void *args) {
 }
 void lipsync(void *args) {
   for(;;) {
+      long random_time = random(5);
       for(float f=0.0; f<=1.0; f=f+0.1) {
         avatar.setMouthOpen(f);
-        vTaskDelay(200);
+        vTaskDelay(100);
       }
-      vTaskDelay(500);
+      vTaskDelay(100 * random_time);
       for(float f=1.0; f>=0.0; f=f-0.1) {
         avatar.setMouthOpen(f);
-        vTaskDelay(200);
+        vTaskDelay(100);
       }
+      vTaskDelay(1000 + 100 * random_time);
   }
 }
 
 #ifdef USE_SERVO
 void servoloop(void *args) {
-  
-  vTaskDelay(33);
+  for (;;) {
+    long x = random(60, 120);
+    long y = random(40, 90);
+    long move_time = random(500, 2000);
+    servo.moveXY(x, y, move_time, move_time);
+    long random_time = random(20);
+    vTaskDelay(2000 + 100 * random_time);
+
+//    servo.moveXY(0, 30, 1000, 1000);
+    //vTaskDelay(100);
+    //servo.moveXY(90, 60, 1000, 1000);
+    //vTaskDelay(100);
+    //servo.moveXY(180, 90, 1000, 1000);
+    //vTaskDelay(100);
+    //servo.moveXY(90, 60, 1000, 1000);
+    //vTaskDelay(100);
+  }
 }
 #endif
 
@@ -162,19 +176,19 @@ void startThreads() {
     servo.check();
     Serial.println("----- servo checked");
 
-//    xTaskCreateUniversal(servoloop,
-                         //"servoloop",
-                         //4096,
-                         //NULL,
-                         //9,
-                         //&servoloopTaskHangle,
-                         //tskNO_AFFINITY);
+    xTaskCreateUniversal(servoloop,
+                         "servoloop",
+                         4096,
+                         NULL,
+                         9,
+                         &servoloopTaskHangle,
+                         tskNO_AFFINITY);
     // サーボの動きはservo_enableで管理
-//    if (servo_enable) {
-      //vTaskResume(servoloopTaskHangle);
-    //} else {
-      //vTaskSuspend(servoloopTaskHangle);
-    //}
+    if (servo_enable) {
+      vTaskResume(servoloopTaskHangle);
+    } else {
+      vTaskSuspend(servoloopTaskHangle);
+    }
 #endif
   }
 }
@@ -184,20 +198,18 @@ void setup() {
   // checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
+  M5.Lcd.setBrightness(100);
 
   avatar.init(&gfx, avatar_json, false, 0);
   startThreads();
 
-#ifdef USE_SERVO
-
-#endif
 }
 
 void loop() {
   M5.update();
   printFreeHeap();
 #ifdef USE_SERVO
-  if (M5.BtnA.wasPressed()) {
+  if (M5.BtnA.wasPressed() and !servo_enable) {
     servo.check();
   }
   if (M5.BtnB.wasPressed()) {
