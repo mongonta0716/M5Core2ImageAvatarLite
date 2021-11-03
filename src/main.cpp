@@ -5,23 +5,13 @@
 #include <M5StackUpdater.h> // https://github.com/tobozo/M5Stack-SD-Updater/
 
 #include "M5ImageAvatarLite.h"
+#include "ImageAvatarServo.h"
 
 // サーボを利用しない場合は下記の1行をコメントにしてください。
 #define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
-#ifdef USE_SERVO
-  #include "ServoEasing.hpp"
-  #define SERVO1_PIN 13
-  #define SERVO2_PIN 14
-  ServoEasing Servo1;
-  ServoEasing Servo2;
-  #define START_DEGREE_VALUE_1 85
-  #define START_DEGREE_VALUE_2 85
-  bool servo_enable = false; // サーボを動かすかどうか
-  TaskHandle_t moveservoTaskHangle;
-#endif
 
 LGFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 
@@ -30,8 +20,14 @@ LGFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
 fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 
-const char* json_file = "/json/M5AvatarConfig.json";
+const char* avatar_json = "/json/M5AvatarLiteConfig.json";
+const char* servo_json = "/json/M5AvatarLiteServoConfig.json"; 
 ImageAvatarLite avatar(json_fs, bmp_fs);
+#ifdef USE_SERVO
+  ImageAvatarServo servo(json_fs, servo_json);
+  bool servo_enable = false; // サーボを動かすかどうか
+  TaskHandle_t servoloopTaskHangle;
+#endif
 
 uint8_t expression = 0;
 
@@ -122,26 +118,9 @@ void lipsync(void *args) {
 }
 
 #ifdef USE_SERVO
-void moveServo(void *args) {
-  for (;;) {
-    if (servo_enable) {
-
-      Servo1.startEaseToD(105, 1000);
-      Servo2.startEaseToD(45, 500);
-      while (ServoEasing::areInterruptsActive()) {
-        vTaskDelay(33);
-      }
-
-      Servo1.startEaseToD(65, 1000);
-      Servo2.startEaseToD(85, 500);
-      while (ServoEasing::areInterruptsActive()) {
-        vTaskDelay(33);
-      }
-    }
-    Servo1.setEasingType(EASE_LINEAR);
-    Servo2.setEasingType(EASE_LINEAR);
-    vTaskDelay(100);
-  }
+void servoloop(void *args) {
+  
+  vTaskDelay(33);
 }
 #endif
 
@@ -177,37 +156,36 @@ void startThreads() {
                          &lipsyncTaskHandle,
                          tskNO_AFFINITY);
 #ifdef USE_SERVO
-    if (Servo1.attach(SERVO1_PIN, START_DEGREE_VALUE_1) == INVALID_SERVO) {
-      Serial.println(F("Error attaching servo"));
-    }
-    if (Servo2.attach(SERVO2_PIN, START_DEGREE_VALUE_2) == INVALID_SERVO) {
-      Serial.println(F("Error attaching servo"));
-    }
+    Serial.println("----- servo init");
+    servo.init();
+    servo.attachAll();
+    servo.check();
+    Serial.println("----- servo checked");
 
-    xTaskCreateUniversal(moveServo,
-                         "moveservo",
-                         4096,
-                         NULL,
-                         9,
-                         &moveservoTaskHangle,
-                         tskNO_AFFINITY);
+//    xTaskCreateUniversal(servoloop,
+                         //"servoloop",
+                         //4096,
+                         //NULL,
+                         //9,
+                         //&servoloopTaskHangle,
+                         //tskNO_AFFINITY);
     // サーボの動きはservo_enableで管理
-    if (servo_enable) {
-      vTaskResume(moveservoTaskHangle);
-    } else {
-      vTaskSuspend(moveservoTaskHangle);
-    }
+//    if (servo_enable) {
+      //vTaskResume(servoloopTaskHangle);
+    //} else {
+      //vTaskSuspend(servoloopTaskHangle);
+    //}
 #endif
   }
 }
 
 void setup() {
   M5.begin(true, true, true, false, false);
-  checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
+  // checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
 
-  avatar.init(&gfx, json_file, false, 0);
+  avatar.init(&gfx, avatar_json, false, 0);
   startThreads();
 
 #ifdef USE_SERVO
@@ -219,13 +197,16 @@ void loop() {
   M5.update();
   printFreeHeap();
 #ifdef USE_SERVO
+  if (M5.BtnA.wasPressed()) {
+    servo.check();
+  }
   if (M5.BtnB.wasPressed()) {
     servo_enable = !servo_enable;
     Serial.printf("BtnB was pressed servo_enable:%d", servo_enable);
     if (servo_enable) {
-      vTaskResume(moveservoTaskHangle);
+      vTaskResume(servoloopTaskHangle);
     } else {
-      vTaskSuspend(moveservoTaskHangle);
+      vTaskSuspend(servoloopTaskHangle);
     }
   }
 #endif
