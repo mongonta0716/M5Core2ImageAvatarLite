@@ -38,6 +38,7 @@ void ImageAvatarServo::init() {
 void ImageAvatarServo::attach(uint8_t servo_no) {
     _servo[servo_no].attach(_servo_init[servo_no]->pin,
                             _servo_init[servo_no]->position_center);
+    _servo[servo_no].setEasingType(EASE_QUADRATIC_IN_OUT);
 }
 
 void ImageAvatarServo::attachAll() {
