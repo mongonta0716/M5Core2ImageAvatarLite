@@ -118,11 +118,15 @@ void lipsync(void *args) {
 
 #ifdef USE_SERVO
 void servoloop(void *args) {
+  long x = 0;
+  long y = 0;
+  long move_time = 0;
   for (;;) {
-    long x = random(60, 120);
-    long y = random(60, 90);
-    long move_time = random(500, 2000);
-    servo.moveXY(x, y, move_time, move_time, true);
+    x = random(60, 120);
+    y = random(60, 90);
+    move_time = random(500, 2000);
+    // 第5引数をtrueにするとサーボを自動的にOFFしますが、よきせぬ動きをする場合があります。
+    servo.moveXY(x, y, move_time, move_time, false);
     long random_time = random(20);
     vTaskDelay(5000 + 500 * random_time);
 
@@ -174,7 +178,6 @@ void startThreads() {
     servo.init();
     servo.attachAll();
     servo.check();
-    servo.detachAll();
     Serial.println("----- servo checked");
 
     xTaskCreateUniversal(servoloop,
