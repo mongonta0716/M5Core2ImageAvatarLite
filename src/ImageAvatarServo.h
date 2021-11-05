@@ -18,6 +18,7 @@ class ImageAvatarServo
         fs::FS *_json_fs;   // 設定ファイルの収納場所(SD or SPIFFS)
         const char* _filename;
         int checkParam(uint8_t servo_no, int degree);
+        int _last_position[AXIS_NUMBER];
 
 
     public:
@@ -26,11 +27,13 @@ class ImageAvatarServo
         void init();
         void attach(uint8_t servo_no);
         void attachAll();
+        void detach(uint8_t servo_no);
+        void detachAll();
 
         void move(uint8_t servo_no, int degree, uint_fast16_t millis_move);
 
         void moveXY(int degree_x, int degree_y,
-                uint_fast16_t millis_move_x, uint_fast16_t millis_move_y);
+                uint_fast16_t millis_move_x, uint_fast16_t millis_move_y, bool auto_attach=false);
         
         // void loop(void* args);
 

@@ -7,7 +7,7 @@
 #include "M5ImageAvatarLite.h"
 
 // サーボを利用しない場合は下記の1行をコメントにしてください。
-//#define USE_SERVO
+#define USE_SERVO
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
@@ -120,11 +120,11 @@ void lipsync(void *args) {
 void servoloop(void *args) {
   for (;;) {
     long x = random(60, 120);
-    long y = random(40, 90);
+    long y = random(60, 90);
     long move_time = random(500, 2000);
-    servo.moveXY(x, y, move_time, move_time);
+    servo.moveXY(x, y, move_time, move_time, true);
     long random_time = random(20);
-    vTaskDelay(2000 + 100 * random_time);
+    vTaskDelay(5000 + 500 * random_time);
 
 //    servo.moveXY(0, 30, 1000, 1000);
     //vTaskDelay(100);
@@ -174,6 +174,7 @@ void startThreads() {
     servo.init();
     servo.attachAll();
     servo.check();
+    servo.detachAll();
     Serial.println("----- servo checked");
 
     xTaskCreateUniversal(servoloop,
