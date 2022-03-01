@@ -2,7 +2,7 @@
 #define _IMAGEAVATAR_SERVO_CONFIG_H_
 
 #include <ArduinoJson.h> // https://github.com/bblanchon/ArduinoJson
-#include <ESP32-Chimera-Core.h>
+#include <M5Unified.h>
 
 #define AXIS_NUMBER 2   // number of ServoAxis
 

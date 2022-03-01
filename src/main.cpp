@@ -1,4 +1,4 @@
-#include <ESP32-Chimera-Core.h>
+#include <M5Unified.h>
 
 #define SDU_APP_PATH "/M5Core2AvatarLite.bin" // title for SD-Updater UI
 #define SDU_APP_NAME "Image Avater Lite" // title for SD-Updater UI
@@ -12,7 +12,7 @@
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
 
-LGFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
+M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
@@ -198,8 +198,9 @@ void startThreads() {
 }
 
 void setup() {
-  M5.begin(true, true, true, false, false);
-  checkSDUpdater( SD, MENU_BIN, 5000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
+  auto cfg = M5.config();
+  M5.begin(cfg);
+  checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
   M5.Lcd.setBrightness(100);

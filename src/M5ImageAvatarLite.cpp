@@ -23,20 +23,20 @@ lgfx::rgb565_t ImageAvatarLite::convertColorCode(uint32_t code) {
     return lgfx::color565(r, g, b);
 }
 
-void ImageAvatarLite::init(LGFX *gfx, const char* filename, bool is_change,
+void ImageAvatarLite::init(M5GFX *gfx, const char* filename, bool is_change,
                            uint8_t expression) {
     loadConfig(*_json_fs, filename);
     this->_gfx = gfx;
     this->_filename = filename;
-    _lcd_sp      = new LGFX_Sprite(_gfx);
-    _head_sp     = new LGFX_Sprite(_lcd_sp);
-    _mouth_sp    = new LGFX_Sprite(_lcd_sp);
-    _mouth_op_sp = new LGFX_Sprite(_lcd_sp);
-    _mouth_cl_sp = new LGFX_Sprite(_lcd_sp);
-    _eye_l_sp    = new LGFX_Sprite(_lcd_sp);
-    _eye_r_sp    = new LGFX_Sprite(_lcd_sp);
-    _eye_op_sp   = new LGFX_Sprite(_lcd_sp);
-    _eye_cl_sp   = new LGFX_Sprite(_lcd_sp);
+    _lcd_sp      = new M5Canvas(_gfx);
+    _head_sp     = new M5Canvas(_lcd_sp);
+    _mouth_sp    = new M5Canvas(_lcd_sp);
+    _mouth_op_sp = new M5Canvas(_lcd_sp);
+    _mouth_cl_sp = new M5Canvas(_lcd_sp);
+    _eye_l_sp    = new M5Canvas(_lcd_sp);
+    _eye_r_sp    = new M5Canvas(_lcd_sp);
+    _eye_op_sp   = new M5Canvas(_lcd_sp);
+    _eye_cl_sp   = new M5Canvas(_lcd_sp);
     _expression = expression;
     _mv = _config.getMoveParameters(_expression);
     initSprites(is_change);
