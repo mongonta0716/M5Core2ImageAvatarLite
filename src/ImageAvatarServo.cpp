@@ -38,6 +38,7 @@ void ImageAvatarServo::init() {
 
 void ImageAvatarServo::attach(uint8_t servo_no) {
     _last_position[servo_no] = _servo_init[servo_no]->position_center;
+    Serial.printf("attach:servo_no:%d, pin:%d, last_pos:%d\n", servo_no, _servo_init[servo_no]->pin, _last_position[servo_no]);
     _servo[servo_no].attach(_servo_init[servo_no]->pin,
                             _last_position[servo_no]); 
     _servo[servo_no].setEasingType(EASE_QUADRATIC_IN_OUT);

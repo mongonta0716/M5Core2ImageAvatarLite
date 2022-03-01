@@ -3,6 +3,7 @@
 
 #include "ImageAvatarConfig.h"
 
+namespace m5imageavatar {
 class ImageAvatarLite
 {
     private:
@@ -45,6 +46,8 @@ class ImageAvatarLite
         ImageAvatarLite(fs::FS& json_fs, fs::FS& bmp_fs);
         ~ImageAvatarLite(void);
 
+        void start();
+        void addTask(TaskFunction_t f, const char* name);
         void createSprite();
         void init(M5GFX *gfx, const char* filename, bool is_change, uint8_t expression = 0);
         void drawAll();
@@ -63,4 +66,17 @@ class ImageAvatarLite
         void drawTest();
 };
 
+class DriveContext {
+    private:
+        ImageAvatarLite *avatar;
+
+    public:
+        DriveContext() = delete;
+        explicit DriveContext(ImageAvatarLite *avatar);
+        ~DriveContext() = default;
+        DriveContext(const DriveContext &other) = delete;
+        DriveContext &operator=(const DriveContext &other) = delete;
+        ImageAvatarLite *getAvatar();
+};
+} // namespace m5imageavatarlite
 #endif // _IMAGEAVATARLITE_H_

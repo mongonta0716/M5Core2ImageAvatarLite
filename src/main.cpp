@@ -19,6 +19,7 @@ M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
 fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 
+using namespace m5imageavatar;
 const char* avatar_json = "/json/M5AvatarLiteConfig.json";
 const char* servo_json = "/json/M5AvatarLiteServoConfig.json"; 
 ImageAvatarLite avatar(json_fs, bmp_fs);
@@ -32,9 +33,6 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
 uint8_t expression = 0;
 
 // Multi Threads Settings
-TaskHandle_t drawTaskHandle;
-TaskHandle_t blinkTaskHandle;
-TaskHandle_t breathTaskHandle;
 TaskHandle_t lipsyncTaskHandle;
 SemaphoreHandle_t xMutex = NULL;
 
@@ -62,54 +60,18 @@ void printFreeHeap() {
 }
 
 // Start----- Task functions ----------
-void drawLoop(void *args) {
-  BaseType_t xStatus;
-  const TickType_t xTicksToWait = 1000UL;
-  xSemaphoreGive(xMutex);
-  for(;;) {
-    xStatus = xSemaphoreTake(xMutex, xTicksToWait);
-    if (xStatus == pdTRUE) {
-        avatar.drawTest();
-    }
-    xSemaphoreGive(xMutex);
-    vTaskDelay(33);
-  }
-}
-
-void breath(void *args) {
-  uint32_t c = 0;
-  for(;;) {
-    c = c + 1 % 100;
-    float f = sin(c) * 2;
-    avatar.setBreath(f);
-    vTaskDelay(1000);
-  }
-}
-void blink(void *args) {
-  for(;;) {
-    // まぶたの動きをリアルにしたいのでfor文を使用
-    for(float f=0.0; f<=1; f=f+0.1) {
-        avatar.setBlink(f);
-        delay(10);
-    }
-    vTaskDelay(2000 + 100 * random(20));
-    for(float f=1.0; f>=0; f=f-0.1) {
-        avatar.setBlink(f);
-        delay(10);
-    }
-    vTaskDelay(300 + 10 * random(20));
-  }
-}
 void lipsync(void *args) {
+  DriveContext * ctx = reinterpret_cast<DriveContext *>(args);
+  ImageAvatarLite *avatar = ctx->getAvatar();
   for(;;) {
       long random_time = random(5);
       for(float f=0.0; f<=1.0; f=f+0.1) {
-        avatar.setMouthOpen(f);
+        avatar->setMouthOpen(f);
         vTaskDelay(100);
       }
       vTaskDelay(100 * random_time);
       for(float f=1.0; f>=0.0; f=f-0.1) {
-        avatar.setMouthOpen(f);
+        avatar->setMouthOpen(f);
         vTaskDelay(100);
       }
       vTaskDelay(1000 + 100 * random_time);
@@ -129,85 +91,53 @@ void servoloop(void *args) {
     servo.moveXY(x, y, move_time, move_time, false);
     long random_time = random(20);
     vTaskDelay(5000 + 500 * random_time);
-
-//    servo.moveXY(0, 30, 1000, 1000);
-    //vTaskDelay(100);
-    //servo.moveXY(90, 60, 1000, 1000);
-    //vTaskDelay(100);
-    //servo.moveXY(180, 90, 1000, 1000);
-    //vTaskDelay(100);
-    //servo.moveXY(90, 60, 1000, 1000);
-    //vTaskDelay(100);
   }
 }
 #endif
 
 void startThreads() {
-  printDebug("----- startThreads -----");
-  if (xMutex != NULL) {
-    xTaskCreateUniversal(drawLoop,
-                         "drawLoop",
-                         4096,
-                         NULL,
-                         5,
-                         &drawTaskHandle,
-                         1); //tskNO_AFFINITY); // Core 1を指定しないと不安定
-    xTaskCreateUniversal(breath,
-                         "breath",
-                         2048,
-                         NULL,
-                         6,
-                         &breathTaskHandle,
-                         tskNO_AFFINITY);
-    xTaskCreateUniversal(blink,
-                         "blink",
-                         2048,
-                         NULL,
-                         7,
-                         &blinkTaskHandle,
-                         tskNO_AFFINITY);
-    xTaskCreateUniversal(lipsync,
-                         "lipsync",
-                         2048,
-                         NULL,
-                         8,
-                         &lipsyncTaskHandle,
-                         tskNO_AFFINITY);
 #ifdef USE_SERVO
-    Serial.println("----- servo init");
-    servo.init();
-    servo.attachAll();
-    servo.check();
-    Serial.println("----- servo checked");
+  Serial.println("----- servo init");
+  servo.init();
+  servo.attachAll();
+  delay(2000);
+  servo.check();
+  Serial.println("----- servo checked");
 
-    xTaskCreateUniversal(servoloop,
-                         "servoloop",
-                         4096,
-                         NULL,
-                         9,
-                         &servoloopTaskHangle,
-                         tskNO_AFFINITY);
-    // サーボの動きはservo_enableで管理
-    if (servo_enable) {
-      vTaskResume(servoloopTaskHangle);
-    } else {
-      vTaskSuspend(servoloopTaskHangle);
-    }
-#endif
+  xTaskCreateUniversal(servoloop,
+                        "servoloop",
+                        4096,
+                        NULL,
+                        9,
+                        &servoloopTaskHangle,
+                        tskNO_AFFINITY);
+  // サーボの動きはservo_enableで管理
+  if (servo_enable) {
+    vTaskResume(servoloopTaskHangle);
+  } else {
+    vTaskSuspend(servoloopTaskHangle);
   }
+#endif
 }
 
 void setup() {
   auto cfg = M5.config();
+#ifdef ARDUINO_M5STACK_FIRE
+  cfg.internal_imu = false; // サーボの誤動作防止(Fireは21,22を使うので干渉するため)
+#endif
   M5.begin(cfg);
-  checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
+  //checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
+  SD.begin(GPIO_NUM_4, SPI, 25000000);
   M5.Lcd.setBrightness(100);
 
   avatar.init(&gfx, avatar_json, false, 0);
+  avatar.start();
+  avatar.addTask(lipsync, "lipsync");
+#ifdef USE_SERVO
   startThreads();
-
+#endif
 }
 
 void loop() {
@@ -232,10 +162,8 @@ void loop() {
     if (expression > 2) {
       expression = 0;
     }
-    vTaskSuspend(drawTaskHandle);
     Serial.printf("----------Expression: %d----------\n", expression);
     avatar.setExpression(expression);
-    vTaskResume(drawTaskHandle);
     Serial.printf("Resume\n");
   }
   vTaskDelay(100);
