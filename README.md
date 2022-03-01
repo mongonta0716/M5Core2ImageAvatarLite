@@ -14,11 +14,12 @@
 
 # 必要なライブラリ
 バージョンについては[platformio.ini](platformio.ini)を見てください。
-- [LovyanGFX](https://github.com/lovyan03/LovyanGFX)<br>LovyanGFXはVer.0.3.12までしか動きません。0.4.0以上ではメモリが足りないようで画面が表示されなくなります。
+- [M5Unified](https://github.com/m5stack/M5Unified)
 - [ArduinoJSON](https://github.com/bblanchon/ArduinoJson)
-- [ESP32-Chimera-Core](https://github.com/tobozo/ESP32-Chimera-Core)
 
-★ESP32-Chimera-CoreはボタンCの制御しか使っていないので必須ではありません。
+## サーボを使う場合
+- [ServoEasing](https://github.com/arminjo/ServoEasing)
+- [ESPServo](https://github.com/madhephaestus/ESP32Servo)
 
 # 対応機種
  メモリの都合上PSRAMが必要なのでM5Stack Core2とM5Stack Fireのみを対象にしています。
