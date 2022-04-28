@@ -18,7 +18,7 @@ void drawLoop(void *args) {
     ImageAvatarLite *avatar = ctx->getAvatar();
     for(;;) {
         avatar->drawTest();
-        vTaskDelay(33/portTICK_PERIOD_MS);
+        vTaskDelay(10/portTICK_PERIOD_MS);
     }
 }
 
@@ -256,7 +256,7 @@ void ImageAvatarLite::addTask(TaskFunction_t f, const char* task_name) {
                          ctx,
                          8,
                          NULL,
-                         tskNO_AFFINITY);
+                         APP_CPU_NUM);
 }
 
 void ImageAvatarLite::start() {
@@ -267,21 +267,21 @@ void ImageAvatarLite::start() {
                          ctx,
                          5,
                          &drawTaskHandle,
-                         1); //tskNO_AFFINITY); // Core 1を指定しないと不安定
-    xTaskCreateUniversal(breath,
-                         "breath",
-                         2048,
-                         ctx,
-                         6,
-                         &breathTaskHandle,
-                         tskNO_AFFINITY);
+                         APP_CPU_NUM); //tskNO_AFFINITY); // Core 1を指定しないと不安定
+//    xTaskCreateUniversal(breath,
+                         //"breath",
+                         //2048,
+                         //ctx,
+                         //6,
+                         //&breathTaskHandle,
+                         //APP_CPU_NUM);
     xTaskCreateUniversal(blink,
                          "blink",
                          2048,
                          ctx,
                          7,
                          &blinkTaskHandle,
-                         tskNO_AFFINITY);
+                         APP_CPU_NUM);
 
 }
 
