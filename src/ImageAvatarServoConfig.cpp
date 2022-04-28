@@ -14,12 +14,15 @@ ImageAvatarServoConfig::~ImageAvatarServoConfig(){
 }
 
 void ImageAvatarServoConfig::loadConfig(fs::FS& fs, const char *filename) {
-    Serial.println("----- ImageAvatarServoConfig::loadConfig");
+    Serial.printf("----- ImageAvatarServoConfig::loadConfig:%s\n", filename);
     File file = fs.open(filename);
+    int res = file.available();
+    Serial.printf("file:available:%d\n", res);
     DynamicJsonDocument doc(4096);
     DeserializationError error = deserializeJson(doc, file);
     if (error) {
-        Serial.printf("json file read error: %s", filename);
+        Serial.printf("json file read error: %s\n", filename);
+        Serial.printf("error%s\n", error.c_str());
     }
     setServoSettings(doc);
 

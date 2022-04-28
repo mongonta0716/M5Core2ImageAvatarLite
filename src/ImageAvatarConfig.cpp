@@ -9,6 +9,8 @@ ImageAvatarConfig::~ImageAvatarConfig(){
 
 void ImageAvatarConfig::loadConfig(fs::FS& fs, const char *filename) {
     File file = fs.open(filename);
+    int res = file.available();
+    Serial.printf("file:available:%d\n", res);
     DynamicJsonDocument doc(4096);
     DeserializationError error = deserializeJson(doc, file);
     if (error) {

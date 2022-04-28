@@ -76,12 +76,12 @@ void ImageAvatarServo::moveXY(int degree_x, int degree_y,
             _servo[i].attach(_servo_init[i]->pin, _last_position[i]);
         }
     }
-    Serial.printf("last_moveX: %d\n", _last_position[AXIS_X]);
-    Serial.printf("last_moveY: %d\n", _last_position[AXIS_Y]);
+    //Serial.printf("last_moveX: %d\n", _last_position[AXIS_X]);
+    //Serial.printf("last_moveY: %d\n", _last_position[AXIS_Y]);
     _last_position[AXIS_X] = checkParam(AXIS_X, degree_x);
     _last_position[AXIS_Y] = checkParam(AXIS_Y, degree_y);
-    Serial.printf("moveX: %d\n", _last_position[AXIS_X]);
-    Serial.printf("moveY: %d\n", _last_position[AXIS_Y]);
+    //Serial.printf("moveX: %d\n", _last_position[AXIS_X]);
+    //Serial.printf("moveY: %d\n", _last_position[AXIS_Y]);
 
     _servo[AXIS_X].startEaseToD(_last_position[AXIS_X], millis_move_x);
     _servo[AXIS_Y].startEaseToD(_last_position[AXIS_Y], millis_move_y);
