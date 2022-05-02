@@ -16,14 +16,14 @@ M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
-fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
-fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
+fs::FS json_fs = SD; //SD; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SD; //SD; // BMPファイルの収納場所(SPIFFS or SD)
 
 using namespace m5imageavatar;
-const char* avatar_json = "/json/M5AvatarLiteConfig.json";
+const char* avatar_json = "/json/M5AvatarLConf.json";
 ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_SERVO
-  const char* servo_json = "/json/M5AvatarLiteServoConfig.json"; 
+  const char* servo_json = "/json/M5AvatarLServoConf.json"; 
   #include "ImageAvatarServo.h"
   ImageAvatarServo servo(json_fs, servo_json);
   bool servo_enable = true; // サーボを動かすかどうか
@@ -52,7 +52,7 @@ static long sing_move_max     = 1000;        // 歌うモードのサーボ移�
 // --------------------
 // Bluetoothのデバイス名
 /// set ESP32-A2DP device name
-static constexpr char bt_device_name[] = "ESP32Core2A04";
+static constexpr char bt_device_name[] = "ESP32Core2A02";
 // --------------------
 
 /// set M5Speaker virtual channel (0-7)
@@ -167,7 +167,7 @@ void servoloop(void *args) {
 
 void startThreads() {
 #ifdef USE_SERVO
-  servo.check();
+  //servo.check();
   delay(2000);
   xTaskCreateUniversal(servoloop,
                         "servoloop",

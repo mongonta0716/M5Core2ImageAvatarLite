@@ -13,7 +13,7 @@ ImageAvatarServo::ImageAvatarServo(fs::FS& json_fs, const char* filename) {
     _config.printAllParameters();
     for (int i=0;i<AXIS_NUMBER;i++) {
         _servo_init[i] = _config.getServoSettings(i);
-        _last_position[i] = _servo_init[i]->position_center;
+        _last_position[i] = _servo_init[i]->position_center + _servo_init[i]->offset;
     }
 }
 
@@ -22,6 +22,7 @@ ImageAvatarServo::~ImageAvatarServo(void) {
 
 int ImageAvatarServo::checkParam(uint8_t servo_no, int degree) {
     //Serial.printf("checkParam:%d", degree);
+    degree += _servo_init[servo_no]->offset;
     if (_servo_init[servo_no]->position_upper < degree) {
         return _servo_init[servo_no]->position_upper;
     } 
@@ -37,7 +38,7 @@ void ImageAvatarServo::init() {
 }
 
 void ImageAvatarServo::attach(uint8_t servo_no) {
-    _last_position[servo_no] = _servo_init[servo_no]->position_center;
+    _last_position[servo_no] = _servo_init[servo_no]->position_center + _servo_init[servo_no]->offset;
     Serial.printf("attach:servo_no:%d, pin:%d, last_pos:%d\n", servo_no, _servo_init[servo_no]->pin, _last_position[servo_no]);
     _servo[servo_no].attach(_servo_init[servo_no]->pin,
                             _last_position[servo_no]); 

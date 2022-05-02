@@ -2,15 +2,17 @@
     "initial_settings": {
         "x_axis": {
             "pin"    : 13,
-            "center" : 85,
+            "center" : 90,
             "lower"  : 0,
-            "upper"  : 180
+            "upper"  : 180,
+            "offset" : 10
         },
         "y_axis": {  
             "pin"    : 14,
             "center" : 60,
             "lower"  : 30,
-            "upper"  : 90
+            "upper"  : 90,
+            "offset" : 0
         }
 
     },

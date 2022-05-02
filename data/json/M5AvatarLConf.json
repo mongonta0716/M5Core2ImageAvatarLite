@@ -82,8 +82,8 @@
                 "ry": 120,
                 "lx": 190,
                 "ly": 120,
-                "w": 52,
-                "h": 52,
+                "w": 40,
+                "h": 60,
                 "filename": {
                     "open": "/bmp_slime/eye_op_normal.bmp",
                     "close": "/bmp_slime/eye_cl_normal.bmp"

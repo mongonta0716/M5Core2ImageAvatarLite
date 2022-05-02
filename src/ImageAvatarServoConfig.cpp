@@ -40,12 +40,14 @@ void ImageAvatarServoConfig::setServoSettings(DynamicJsonDocument doc) {
     _servo_initial[AXIS_X].position_center = axis_x["center"];
     _servo_initial[AXIS_X].position_upper  = axis_x["upper"];
     _servo_initial[AXIS_X].position_lower  = axis_x["lower"];
+    _servo_initial[AXIS_X].offset          = axis_x["offset"];
 
     JsonObject axis_y = initial_settings["y_axis"];
     _servo_initial[AXIS_Y].pin = axis_y["pin"];
     _servo_initial[AXIS_Y].position_center = axis_y["center"];
     _servo_initial[AXIS_Y].position_upper  = axis_y["upper"];
     _servo_initial[AXIS_Y].position_lower  = axis_y["lower"];
+    _servo_initial[AXIS_Y].offset          = axis_y["offset"];
    
 }
 
@@ -60,6 +62,7 @@ void ImageAvatarServoConfig::printAllParameters() {
         Serial.printf("servo_pin:%d,", _servo_initial[i].pin);
         Serial.printf("servo_center:%d,", _servo_initial[i].position_center);
         Serial.printf("servo_upper:%d,", _servo_initial[i].position_upper);
-        Serial.printf("servo_lower:%d\n", _servo_initial[i].position_lower);
+        Serial.printf("servo_lower:%d,", _servo_initial[i].position_lower);
+        Serial.printf("offset:%d\n", _servo_initial[i].offset);
     }
 }
