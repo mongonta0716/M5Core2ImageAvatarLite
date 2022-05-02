@@ -302,11 +302,17 @@ void ImageAvatarLite::setBlink(float ratio, bool is_right) {
 }
 
 void ImageAvatarLite::setExpression(uint8_t expression) {
+    vTaskSuspend(blinkTaskHandle); // blinkを先に止めないと画像が乱れる。
     vTaskSuspend(drawTaskHandle);
+    _mv.eye_l_ratio = 1.0f;
+    _mv.eye_r_ratio = 1.0f;
     if (_expression == expression) return;
 
     _expression = expression;
     initSprites(true);
+    vTaskResume(drawTaskHandle);
+    vTaskResume(blinkTaskHandle);
+    if (_expression == expression) return;
 }
 
 void ImageAvatarLite::setMouthOpen(float ratio) {
