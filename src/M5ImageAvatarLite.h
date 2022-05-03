@@ -51,6 +51,7 @@ class ImageAvatarLite
         void createSprite();
         void init(M5GFX *gfx, const char* filename, bool is_change, uint8_t expression = 0);
         void drawAll();
+        void changeAvatar(const char* filename, uint8_t expression = 0);
         void setMoveParameter(move_param_s mv);
         void setExpression(uint8_t expression);
         void setBreath(float f);

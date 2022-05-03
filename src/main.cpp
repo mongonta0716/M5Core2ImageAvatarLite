@@ -20,10 +20,15 @@ fs::FS json_fs = SD; //SD; // JSONファイルの収納場所(SPIFFS or SD)
 fs::FS bmp_fs  = SD; //SD; // BMPファイルの収納場所(SPIFFS or SD)
 
 using namespace m5imageavatar;
-const char* avatar_json = "/json/M5AvatarLConf.json";
+const char* avatar_json[] = { "/json/M5AvatarLConf0.json",  // ファイル名は32バイトを超えると不具合が起きる場合あり。
+                              "/json/M5AvatarLConf1.json",
+                              "/json/M5AvatarLConf2.json" 
+                            }; //
+uint8_t avatar_count_max = 3;
+uint8_t avatar_count = 0;
 ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_SERVO
-  const char* servo_json = "/json/M5AvatarLServoConf.json"; 
+  const char* servo_json = "/json/M5AvatarLServoConf.json"; // ファイル名は32バイトを超えると不具合が起きる場合あり。
   #include "ImageAvatarServo.h"
   ImageAvatarServo servo(json_fs, servo_json);
   bool servo_enable = true; // サーボを動かすかどうか
@@ -39,20 +44,20 @@ bool sing_happy = true;
 
 // ----- あまり間隔を短くしすぎるとサーボが壊れやすくなるので注意(単位:msec)
 static long interval_min      = 1000;        // 待機時インターバル最小
-static long interval_max      = 3000;       // 待機時インターバル最大
+static long interval_max      = 10000;       // 待機時インターバル最大
 static long interval_move_min = 500;         // 待機時のサーボ移動時間最小
 static long interval_move_max = 1500;        // 待機時のサーボ移動時間最大
 static long sing_interval_min = 500;         // 歌うモードのインターバル最小
-static long sing_interval_max = 1000;        // 歌うモードのインターバル最大
+static long sing_interval_max = 1500;        // 歌うモードのインターバル最大
 static long sing_move_min     = 500;         // 歌うモードのサーボ移動時間最小
-static long sing_move_max     = 1000;        // 歌うモードのサーボ移動時間最大
+static long sing_move_max     = 1500;        // 歌うモードのサーボ移動時間最大
 // サーボ関連の設定 end
 // --------------------
 
 // --------------------
 // Bluetoothのデバイス名
 /// set ESP32-A2DP device name
-static constexpr char bt_device_name[] = "ESP32Core2A02";
+static constexpr char bt_device_name[] = "ESP32";
 // --------------------
 
 /// set M5Speaker virtual channel (0-7)
@@ -234,7 +239,7 @@ void setup() {
   servo.attachAll();
   Serial.println("----- servo checked");
 #endif
-  avatar.init(&gfx, avatar_json, false, 0);
+  avatar.init(&gfx, avatar_json[avatar_count], false, 0);
   avatar.start();
   avatar.addTask(lipsync, "lipsync");
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
@@ -249,8 +254,16 @@ void loop() {
   M5.update();
   printFreeHeap();
 #ifdef USE_SERVO
-  if (M5.BtnA.wasPressed() and !servo_enable) {
+  if (M5.BtnA.wasHold() and !servo_enable) {
     servo.check();
+  }
+  if (M5.BtnA.wasClicked()) {
+    avatar_count++;
+    if (avatar_count >= avatar_count_max) {
+      avatar_count = 0;
+    }
+    Serial.printf("Avatar No:%d\n", avatar_count);
+    avatar.changeAvatar(avatar_json[avatar_count]);
   }
   if (M5.BtnB.wasPressed()) {
     servo_enable = !servo_enable;

@@ -285,6 +285,18 @@ void ImageAvatarLite::start() {
 
 }
 
+void ImageAvatarLite::changeAvatar(const char* filename, uint8_t expression) {
+    vTaskSuspend(blinkTaskHandle); // blinkを先に止めないと画像が乱れる。
+    vTaskSuspend(drawTaskHandle);
+    _mv.eye_l_ratio = 1.0f;
+    _mv.eye_r_ratio = 1.0f;
+    _filename = filename;
+    _expression = expression;
+    initSprites(true);
+    vTaskResume(drawTaskHandle);
+    vTaskResume(blinkTaskHandle);
+}
+
 void ImageAvatarLite::setBreath(float f) {
     _mv.breath = f;
 }
