@@ -33,8 +33,14 @@
 
 ## SDカード上に必要なファイル
  
- 1. /bmp_slime/<br>BMPファイル(サンプルのbmp_slimeでは全部で11ファイル)<br>
- 2. /json/<br>M5AvatarLiteConfig.json<br>M5AvatarLiteServoConfig.json(※サーボを使う場合)
+ 1. - /bmp_slime/<br>BMPファイル(サンプルのbmp_slimeでは全部で11ファイル)
+    - /bmp_puipui/<br>
+    - /bmp_jackolantern/<br>
+ 1. /json/<br>
+    - M5AvatarLite00.json<br>slimeの設定ファイル
+    - M5AvatarLite01.json<br>puipuiの設定ファイル
+    - M5AvatarLite02.json<br>jackolanternの設定ファイル
+    - M5AvatarLiteServo.json(※サーボを使う場合)
 
 # JSONファイルとBMPファイルの置き場所について
  main.cppの下記の行を変更するとJSONファイルとBMPファイルの収納場所をSDかSPIFFSか指定できます。SPIFFSに置くと開発するときにVSCodeからUploadできるようになり、SDカードを抜き差しして書き換える手間が省けます。

@@ -16,19 +16,19 @@ M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
-fs::FS json_fs = SD; //SD; // JSONファイルの収納場所(SPIFFS or SD)
-fs::FS bmp_fs  = SD; //SD; // BMPファイルの収納場所(SPIFFS or SD)
+fs::FS json_fs = SPIFFS; //SD; // JSONファイルの収納場所(SPIFFS or SD)
+fs::FS bmp_fs  = SPIFFS; //SD; // BMPファイルの収納場所(SPIFFS or SD)
 
 using namespace m5imageavatar;
-const char* avatar_json[] = { "/json/M5AvatarLConf0.json",  // ファイル名は32バイトを超えると不具合が起きる場合あり。
-                              "/json/M5AvatarLConf1.json",
-                              "/json/M5AvatarLConf2.json" 
+const char* avatar_json[] = { "/json/M5AvatarLite00.json",  // ファイル名は32バイトを超えると不具合が起きる場合あり。
+                              "/json/M5AvatarLite01.json",
+                              "/json/M5AvatarLite02.json" 
                             }; //
 uint8_t avatar_count_max = 3;
 uint8_t avatar_count = 0;
 ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_SERVO
-  const char* servo_json = "/json/M5AvatarLServoConf.json"; // ファイル名は32バイトを超えると不具合が起きる場合あり。
+  const char* servo_json = "/json/M5AvatarLiteServo.json"; // ファイル名は32バイトを超えると不具合が起きる場合あり。
   #include "ImageAvatarServo.h"
   ImageAvatarServo servo(json_fs, servo_json);
   bool servo_enable = true; // サーボを動かすかどうか

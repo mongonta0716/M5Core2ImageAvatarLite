@@ -1,0 +1,163 @@
+{
+    "expression": [
+        "normal",
+        "sad",
+        "angry"
+    ],
+
+    "sprite_info": {
+        "psram": "true",
+        "color_depth": 16,
+        "swap_bytes": 0
+    },
+    "color_info": {
+        "skin"  : "0xFF5B00",
+        "eye_white" : "0xFFFFFF",
+        "transparent"    : "0x00FF00"
+    },
+    "fixed_parts": [
+        {
+            "parts": "body",
+            "x": 0,
+            "y": 0,
+            "w": 320,
+            "h": 240,
+            "filename": "/bmp_slime/head.bmp"
+        }
+    ],
+    "mouth": [
+        {
+            "normal": {
+                "x": 160,
+                "y": 210,
+                "w": 60,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/mouth_op_normal.bmp",
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "sad": {
+                "x": 160,
+                "y": 200,
+                "w": 60,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/mouth_op_sad.bmp",
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "angry": {
+                "x": 160,
+                "y": 200,
+                "w": 60,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/mouth_op_angry.bmp",
+                    "close": "/bmp_slime/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        }
+    ],
+    "eye": [
+        {
+            "normal": {
+                "rx": 130,
+                "ry": 120,
+                "lx": 190,
+                "ly": 120,
+                "w": 40,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/eye_op_normal.bmp",
+                    "close": "/bmp_slime/eye_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "sad": {
+                "rx": 120,
+                "ry": 100,
+                "lx": 200,
+                "ly": 100,
+                "w": 40,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/eye_op_sad.bmp",
+                    "close": "/bmp_slime/eye_cl_sad.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "angry": {
+                "rx": 120,
+                "ry": 100,
+                "lx": 200,
+                "ly": 100,
+                "w": 40,
+                "h": 60,
+                "filename": {
+                    "open": "/bmp_slime/eye_op_angry.bmp",
+                    "close": "/bmp_slime/eye_cl_angry.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.3,
+                "maxScaleY": 1.0
+            }
+        }
+    ],
+    "init_param": [
+        {
+            "normal": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "sad": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "angry": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        }
+    ]
+}
