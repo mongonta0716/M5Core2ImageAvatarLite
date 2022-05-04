@@ -151,14 +151,15 @@ void servoloop(void *args) {
     
 //    Serial.printf("x:%f:y:%f\n", gaze_x, gaze_y);
     // X軸は90°から+-でランダムに左右にスイング
+    int random_move = random(15);  // ランダムに15°まで動かす
     int direction = random(2);
     if (direction == 0) {
-      move_x = 90 - mouth_ratio * 30;
+      move_x = 90 - mouth_ratio * 15 - random_move;
     } else {
-      move_x = 90 + mouth_ratio * 30;
+      move_x = 90 + mouth_ratio * 15 + random_move;
     }
     // Y軸は90°から上にスイング（最大35°）
-    move_y = 90 - mouth_ratio * 20;
+    move_y = 90 - mouth_ratio * 10 - random_move;
     servo.moveXY(move_x, move_y, move_time, move_time);
     if (sing_mode) {
       // 歌っているときはうなずく

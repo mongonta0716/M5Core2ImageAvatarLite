@@ -35,7 +35,7 @@
  
  1. - /bmp_slime/<br>BMPファイル(サンプルのbmp_slimeでは全部で11ファイル)
     - /bmp_puipui/<br>
-    - /bmp_jackolantern/<br>
+    - /bmp_jacko/<br>
  1. /json/<br>
     - M5AvatarLite00.json<br>slimeの設定ファイル
     - M5AvatarLite01.json<br>puipuiの設定ファイル
