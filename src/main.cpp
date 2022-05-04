@@ -6,8 +6,11 @@
 
 #include "M5ImageAvatarLite.h"
 
-// サーボを利用しない場合は下記の1行をコメントにしてください。
+// サーボを利用しない場合は下記の1行をコメントアウトしてください。
 #define USE_SERVO
+
+// M5GoBottomのLEDを使わない場合は下記の1行をコメントアウトしてください。
+#define USE_LED
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
@@ -34,6 +37,39 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
   bool servo_enable = true; // サーボを動かすかどうか
   TaskHandle_t servoloopTaskHangle;
 #endif
+
+#ifdef USE_LED
+  #include <FastLED.h>
+  #define NUM_LEDS 10
+  #define LED_PIN  25
+  CRGB leds[NUM_LEDS];
+  CRGB led_table[NUM_LEDS / 2] = {CRGB::Blue, CRGB::Green, CRGB::Yellow, CRGB::Orange, CRGB::Red };
+  void turn_off_led() {
+    // Now turn the LED off, then pause
+    for(int i=0;i<NUM_LEDS;i++) leds[i] = CRGB::Black;
+    FastLED.show();  
+  }
+
+  void clear_led_buff() {
+    // Now turn the LED off, then pause
+    for(int i=0;i<NUM_LEDS;i++) leds[i] =  CRGB::Black;
+  }
+
+  void level_led(int level1, int level2) {  
+  if(level1 > 5) level1 = 5;
+  if(level2 > 5) level2 = 5;
+    
+    clear_led_buff(); 
+    for(int i=0;i<level1;i++){
+      leds[NUM_LEDS/2-1-i] = led_table[i];
+    }
+    for(int i=0;i<level2;i++){
+      leds[i+NUM_LEDS/2] = led_table[i];
+    }
+    FastLED.show();
+  }
+#endif
+
 
 #include "BluetoothA2DPSink_M5Speaker.hpp"
 #define LIPSYNC_LEVEL_MAX 10.0f
@@ -104,6 +140,9 @@ void lipsync(void *args) {
      uint64_t level = 0;
     auto buf = a2dp_sink.getBuffer();
     if (buf) {
+#ifdef USE_LED
+      level_led(abs(buf[1])*10/INT16_MAX,abs(buf[0])*10/INT16_MAX);
+#endif
       memcpy(raw_data, buf, WAVE_SIZE * 2 * sizeof(int16_t));
       fft.exec(raw_data);
       for (size_t bx = 5; bx <= 64; ++bx) { // リップシンクで抽出する範囲はここで指定(低音)0〜64（高音）
@@ -226,7 +265,7 @@ void setup() {
     spk_cfg.dma_buf_len = 256;
     M5.Speaker.config(spk_cfg);
   }
-  M5.Speaker.setChannelVolume(m5spk_virtual_channel, 200);
+  M5.Speaker.setChannelVolume(m5spk_virtual_channel, 150);
   //checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
@@ -240,6 +279,15 @@ void setup() {
   servo.attachAll();
   Serial.println("----- servo checked");
 #endif
+#ifdef USE_LED
+  FastLED.addLeds<SK6812, LED_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
+  FastLED.setBrightness(32);
+  level_led(5, 5);
+  delay(1000);
+  turn_off_led();
+#endif
+
+
   avatar.init(&gfx, avatar_json[avatar_count], false, 0);
   avatar.start();
   avatar.addTask(lipsync, "lipsync");
