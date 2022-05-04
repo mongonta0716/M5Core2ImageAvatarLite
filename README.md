@@ -12,6 +12,13 @@
 - VSCode(Ver.1.55.1)
 - PlatformIO
 
+## ArduinoIDEで使用する場合
+srcフォルダとmain.cppの名前を揃えて変更してください。
+
+### 変更例
+src -> M5Core2ImageAvatarLite<br>
+main.cpp -> M5Core2ImageAvatarLite.ino
+
 # 必要なライブラリ
 バージョンについては[platformio.ini](platformio.ini)を見てください。
 - [M5Unified](https://github.com/m5stack/M5Unified)
@@ -21,6 +28,9 @@
 - [ServoEasing](https://github.com/arminjo/ServoEasing)
 - [ESPServo](https://github.com/madhephaestus/ESP32Servo)
 
+## LEDを使う場合
+- [FastLED](https://github.com/FastLED/FastLED)
+
 # 対応機種
  メモリの都合上PSRAMが必要なのでM5Stack Core2とM5Stack Fireのみを対象にしています。
  4bitBMPを使用し、カラーパレットを使用することにより他の機種でも動きますが手順が複雑なのでCore2及びFireのみとします。
@@ -28,8 +38,9 @@
 # 使い方
 1. SDカードのルートにdataにあるフォルダ(bmp,json)をコピー
 1. プログラムを書き込むとAvatarが起動します。
-1. 口は開閉を繰り返すだけです。BtnCを押すと表情が切り替わります。
-
+1. BtnAを押すとAvatarが切り替わります。
+1. BtnCを押すと表情が切り替わります。(表情が用意してある場合)
+1. Bluetoothスピーカーとして機能します。「ESP32」というデバイスをペアリングすると音を再生可能です。
 
 ## SDカード上に必要なファイル
  
@@ -247,7 +258,7 @@ head.bmpをhead_potato.bmpに変更すると、〇ルカーっぽい何かにな
 main.cpp冒頭の#define USE_SERVOのコメントを外すとサーボを利用できます。2021/11現在では[ｽﾀｯｸﾁｬﾝ](https://github.com/meganetaaan/stack-chan)での利用を想定しています。
 
 ## サーボの初期設定
-X軸とY軸の2軸（ｽﾀｯｸﾁｬﾝのパン(x)とチルト(y)）で利用できます。/json/フォルダにM5AvatarLiteServoConfig.jsonを置いてください。
+X軸とY軸の2軸（ｽﾀｯｸﾁｬﾝのパン(x)とチルト(y)）で利用できます。/json/フォルダにM5AvatarLiteServo.jsonを置いてください。
 
 [![M5Core2ImageAvatarLite](https://img.youtube.com/vi/07fEke_r3Xc/0.jpg)](https://www.youtube.com/watch?v=07fEke_r3Xc)
 
@@ -260,13 +271,15 @@ X軸とY軸の2軸（ｽﾀｯｸﾁｬﾝのパン(x)とチルト(y)）で利�
             "pin"    : 13,     // 水平方向のサーボピン番号
             "center" : 85,     // サーボの中心（初期位置）
             "lower"  : 0,      // サーボの下限角度
-            "uppder"  : 180     // サーボの上限角度
+            "uppder"  : 180,   // サーボの上限角度
+            "offset" : 0       // サーボのオフセット
         },
         "y_axis": {            // チルト
             "pin"    : 14,     // 垂直方向のサーボ品番号
             "center" : 60,     // サーボの中心(初期位置)
             "lower"  : 30,     // サーボの下限角度
-            "upper"  : 90      // サーボの上限角度
+            "upper"  : 90,     // サーボの上限角度
+            "offset" : 0       // サーボのオフセット
         }
 
     },
@@ -281,11 +294,13 @@ ImageAvatarを実現するにあたり優れたパフォーマンス、機能を
 
 ImageAvatar作成するにあたり、 初期の頃からたくさんのアドバイスを頂き、参考にさせていただいた[M5Stack_WebRadio_Avatar](https://github.com/robo8080/M5Stack_WebRadio_Avator)の作者[robo8080](https://github.com/robo8080)氏に感謝いたします。
 
+色々なアドバイスを頂いた[tobozo](https;//github.com/tobozo)氏に感謝いたします。
 
 # Credit
 - [meganetaaan](https://github.com/meganetaaan)
 - [lovyan03](https://github.com/lovyan03/LovyanGFX)
 - [robo8080](https://github.com/robo8080)
+- [tobozo](https://github.com/tobozo)
 
 # LICENSE
 [MIT](LICENSE)
