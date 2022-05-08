@@ -1,0 +1,10 @@
+{
+    "avatar_json": [
+        "/json/M5AvatarLite00.json",
+        "/json/M5AvatarLite01.json",
+        "/json/M5AvatarLite02.json"
+    ],
+    "bluetooth_device_name" : "ESP32",
+    "servo_json" : "/json/M5AvatarLiteServo.json",
+    "servo_random_mode" : true
+}

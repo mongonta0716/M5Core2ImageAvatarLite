@@ -8,6 +8,7 @@ ImageAvatarConfig::~ImageAvatarConfig(){
 }
 
 void ImageAvatarConfig::loadConfig(fs::FS& fs, const char *filename) {
+    Serial.printf("ImageAvatarConfig: %s\n", filename);
     File file = fs.open(filename);
     int res = file.available();
     Serial.printf("file:available:%d\n", res);

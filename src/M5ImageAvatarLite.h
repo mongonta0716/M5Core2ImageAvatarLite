@@ -53,7 +53,7 @@ class ImageAvatarLite
         void drawAll();
         void changeAvatar(const char* filename, uint8_t expression = 0);
         void setMoveParameter(move_param_s mv);
-        void setExpression(uint8_t expression);
+        void setExpression(const char* filename, uint8_t expression);
         void setBreath(float f);
         void setBlink(float ratio);
         void setBlink(float ratio, bool isRight);
@@ -62,6 +62,7 @@ class ImageAvatarLite
 
         float getMouthOpen();
         move_param_s getMoveParameter();
+        uint8_t getExpressionMax();
 
         void readTest();
         void drawTest();

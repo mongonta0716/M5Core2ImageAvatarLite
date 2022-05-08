@@ -100,7 +100,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
         Serial.println("DeleteSprites");
         deleteSprites();
     }
-    Serial.println("initSprites");
+    Serial.printf("initSprites:%s\n", _filename);
     loadConfig(*_json_fs, _filename);
     _config.printAllParameters();
     _spcommon = _config.getSpriteCommonParameters();
@@ -313,13 +313,13 @@ void ImageAvatarLite::setBlink(float ratio, bool is_right) {
     }
 }
 
-void ImageAvatarLite::setExpression(uint8_t expression) {
+void ImageAvatarLite::setExpression(const char* filename, uint8_t expression) {
+    if (_expression == expression) return;
     vTaskSuspend(blinkTaskHandle); // blinkを先に止めないと画像が乱れる。
     vTaskSuspend(drawTaskHandle);
     _mv.eye_l_ratio = 1.0f;
     _mv.eye_r_ratio = 1.0f;
-    if (_expression == expression) return;
-
+    _filename = filename;
     _expression = expression;
     initSprites(true);
     vTaskResume(drawTaskHandle);
@@ -329,6 +329,10 @@ void ImageAvatarLite::setExpression(uint8_t expression) {
 
 void ImageAvatarLite::setMouthOpen(float ratio) {
     _mv.mouth_ratio = ratio;
+}
+
+uint8_t ImageAvatarLite::getExpressionMax() {
+    return _config.getExpressionMax();
 }
 
 } // namespace m5imageavatar

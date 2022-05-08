@@ -22,9 +22,11 @@ class ImageAvatarServo
 
 
     public:
+        ImageAvatarServo();
         ImageAvatarServo(fs::FS& json_fs, const char* filename);
         ~ImageAvatarServo(void);
         void init();
+        void init(fs::FS& json_fs, const char * filename);
         void attach(uint8_t servo_no);
         void attachAll();
         void detach(uint8_t servo_no);

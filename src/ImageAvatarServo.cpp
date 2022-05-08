@@ -6,19 +6,15 @@
 
 static ServoEasing _servo[AXIS_NUMBER];
 
+ImageAvatarServo::ImageAvatarServo() {};
+
 ImageAvatarServo::ImageAvatarServo(fs::FS& json_fs, const char* filename) {
-    _json_fs = &json_fs;
-    _filename = filename;
-    _config.loadConfig(json_fs, filename);
-    _config.printAllParameters();
-    for (int i=0;i<AXIS_NUMBER;i++) {
-        _servo_init[i] = _config.getServoSettings(i);
-        _last_position[i] = _servo_init[i]->position_center + _servo_init[i]->offset;
-    }
+    init(json_fs, filename);
 }
 
 ImageAvatarServo::~ImageAvatarServo(void) {
 }
+
 
 int ImageAvatarServo::checkParam(uint8_t servo_no, int degree) {
     //Serial.printf("checkParam:%d", degree);
@@ -35,6 +31,18 @@ int ImageAvatarServo::checkParam(uint8_t servo_no, int degree) {
 void ImageAvatarServo::init() {
     _config.loadConfig(*_json_fs, _filename);
     _config.printAllParameters();
+}
+
+void ImageAvatarServo::init(fs::FS& json_fs, const char* filename) {
+     _json_fs = &json_fs;
+    _filename = filename;
+    _config.loadConfig(json_fs, filename);
+    _config.printAllParameters();
+    for (int i=0;i<AXIS_NUMBER;i++) {
+        _servo_init[i] = _config.getServoSettings(i);
+        _last_position[i] = _servo_init[i]->position_center + _servo_init[i]->offset;
+    }
+    init();
 }
 
 void ImageAvatarServo::attach(uint8_t servo_no) {

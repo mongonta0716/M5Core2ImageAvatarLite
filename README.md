@@ -48,6 +48,7 @@ main.cpp -> M5Core2ImageAvatarLite.ino
     - /bmp_puipui/<br>
     - /bmp_jacko/<br>
  1. /json/<br>
+    - M5AvatarLiteSystem.json<br>一番最初に読み込まれる設定ファイル
     - M5AvatarLite00.json<br>slimeの設定ファイル
     - M5AvatarLite01.json<br>puipuiの設定ファイル
     - M5AvatarLite02.json<br>jackolanternの設定ファイル
@@ -61,6 +62,27 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 ```
  ## VSCodeからのデータUpload方法（英語）
  [ESP32 with VS Code and PlatformIO: Upload Files to Filesystem (SPIFFS)](https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/)
+
+# M5AvatarLiteSystem.jsonの内容
+一番最初に読み込まれる設定ファイルです。サンプルでは3つまで定義してあります。（最大8つ）
+```
+{
+    "avatar_json": {
+        "count": 3,                                       // 切り替えるAvatarの総数(1〜8)
+        "filename" : {
+            "0"  : "/json/M5AvatarLite00.json",           // countで設定した数に対応するAvatar定義を作成
+            "1"  : "/json/M5AvatarLite01.json",
+            "2"  : "/json/M5AvatarLite02.json"            // 3つ以上増やすときは末尾に「,」を追加
+            // "3" : .... ,
+            // .
+            // "7" : "/json/M5AvatarLite07.json"
+        }
+    },
+    "bluetooth_device_name" : "ESP32",                    // Bluetoothスピーカーのデバイス名
+    "servo_json" : "/json/M5AvatarLiteServo.json",        // サーボの設定ファイル
+    "servo_random_mode" : "false"                         // 通常時にサーボをランダムで動かすかどうか
+}
+```
 
  # カスタマイズ方法
  自分で24bitか16bitのBMPファイルを用意すると好きな画像をAvatar化することが可能です。

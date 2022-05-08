@@ -5,6 +5,7 @@
 #include <M5StackUpdater.h> // https://github.com/tobozo/M5Stack-SD-Updater/
 
 #include "M5ImageAvatarLite.h"
+#include "ImageAvatarSystemConfig.h" 
 
 // サーボを利用しない場合は下記の1行をコメントアウトしてください。
 #define USE_SERVO
@@ -23,17 +24,15 @@ fs::FS json_fs = SD; // JSONファイルの収納場所(SPIFFS or SD)
 fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 
 using namespace m5imageavatar;
-const char* avatar_json[] = { "/json/M5AvatarLite00.json",  // ファイル名は32バイトを超えると不具合が起きる場合あり。
-                              "/json/M5AvatarLite01.json",
-                              "/json/M5AvatarLite02.json" 
-                            }; //
-uint8_t avatar_count_max = 3;
+
+
+ImageAvatarSystemConfig system_config;
+const char* avatar_system_json = "/json/M5AvatarLiteSystem.json"; // ファイル名は32バイトを超えると不具合が起きる場合あり
 uint8_t avatar_count = 0;
 ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_SERVO
-  const char* servo_json = "/json/M5AvatarLiteServo.json"; // ファイル名は32バイトを超えると不具合が起きる場合あり。
   #include "ImageAvatarServo.h"
-  ImageAvatarServo servo(json_fs, servo_json);
+  ImageAvatarServo servo;
   bool servo_enable = true; // サーボを動かすかどうか
   TaskHandle_t servoloopTaskHangle;
 #endif
@@ -90,11 +89,6 @@ static long sing_move_max     = 1500;        // 歌うモードのサーボ移�
 // サーボ関連の設定 end
 // --------------------
 
-// --------------------
-// Bluetoothのデバイス名
-/// set ESP32-A2DP device name
-static constexpr char bt_device_name[] = "ESP32";
-// --------------------
 
 /// set M5Speaker virtual channel (0-7)
 static constexpr uint8_t m5spk_virtual_channel = 0;
@@ -221,7 +215,8 @@ void startThreads() {
                         9,
                         &servoloopTaskHangle,
                         APP_CPU_NUM);
-  // サーボの動きはservo_enableで管理
+  servo_enable = system_config.getServoRandomMode();
+ // サーボの動きはservo_enableで管理
   if (servo_enable) {
     vTaskResume(servoloopTaskHangle);
   } else {
@@ -230,22 +225,22 @@ void startThreads() {
 #endif
 }
 
-void hvt_event_callback(int avatar_expression) {
-  avatar.setExpression(0);
-  //avatar.setExpression(avatar_expression);
-}
+//void hvt_event_callback(int avatar_expression) {
+  //avatar.setExpression(0);
+  ////avatar.setExpression(avatar_expression);
+//}
 
-void avrc_metadata_callback(uint8_t data1, const uint8_t *data2)
-{
-  Serial.printf("AVRC metadata rsp: attribute id 0x%x, %s\n", data1, data2);
-  if (sing_happy) {
-    avatar.setExpression(0);
-  } else {
-    avatar.setExpression(0);
-  }
-  sing_happy = !sing_happy;
+//void avrc_metadata_callback(uint8_t data1, const uint8_t *data2)
+//{
+  //Serial.printf("AVRC metadata rsp: attribute id 0x%x, %s\n", data1, data2);
+  //if (sing_happy) {
+    //avatar.setExpression(0);
+  //} else {
+    //avatar.setExpression(0);
+  //}
+  //sing_happy = !sing_happy;
 
-}
+//}
 
 void setup() {
   auto cfg = M5.config();
@@ -272,12 +267,14 @@ void setup() {
   SD.begin(GPIO_NUM_4, SPI, 25000000);
   M5.Lcd.setBrightness(100);
 
+  system_config.loadConfig(json_fs, avatar_system_json);
+  system_config.printAllParameters();
+  
 #ifdef USE_SERVO
   // 2022.4.26 ServoConfig.jsonを先に読まないと失敗する。（原因不明）
-  Serial.println("----- servo init");
-  servo.init();
+  
+  servo.init(json_fs, system_config.getServoJsonFilename().c_str());
   servo.attachAll();
-  Serial.println("----- servo checked");
 #endif
 #ifdef USE_LED
   FastLED.addLeds<SK6812, LED_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
@@ -287,14 +284,14 @@ void setup() {
   turn_off_led();
 #endif
 
-
-  avatar.init(&gfx, avatar_json[avatar_count], false, 0);
+  String avatar_filename = system_config.getAvatarJsonFilename(avatar_count);
+  avatar.init(&gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
   avatar.addTask(lipsync, "lipsync");
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
   M5.Speaker.setChannelVolume(m5spk_virtual_channel, 200);
-  a2dp_sink.start(bt_device_name, false);
+  a2dp_sink.start(system_config.getBluetoothDeviceName().c_str(), false);
   startThreads();
 
 }
@@ -303,18 +300,23 @@ void loop() {
   M5.update();
   printFreeHeap();
 #ifdef USE_SERVO
-  if (M5.BtnA.wasHold() and !servo_enable) {
+  if (M5.BtnA.pressedFor(2000)) {
+    // サーボチェックをします。
+    vTaskSuspend(servoloopTaskHangle); // ランダムな動きを止める。
     servo.check();
+    vTaskResume(servoloopTaskHangle);  // ランダムな動きを再開
   }
   if (M5.BtnA.wasClicked()) {
+    // アバターを変更します。
     avatar_count++;
-    if (avatar_count >= avatar_count_max) {
+    if (avatar_count >= system_config.getAvatarMaxCount()) {
       avatar_count = 0;
     }
     Serial.printf("Avatar No:%d\n", avatar_count);
-    avatar.changeAvatar(avatar_json[avatar_count]);
+    avatar.changeAvatar(system_config.getAvatarJsonFilename(avatar_count).c_str());
   }
   if (M5.BtnB.wasPressed()) {
+    // サーボを動かす＜＞止めるの切り替え
     servo_enable = !servo_enable;
     Serial.printf("BtnB was pressed servo_enable:%d", servo_enable);
     if (servo_enable) {
@@ -325,12 +327,14 @@ void loop() {
   }
 #endif
   if (M5.BtnC.wasPressed()) {
+    // 表情を切り替え
     expression++;
-    if (expression > 2) {
+    Serial.printf("ExpressionMax:%d\n", avatar.getExpressionMax());
+    if (expression >= avatar.getExpressionMax()) {
       expression = 0;
     }
     Serial.printf("----------Expression: %d----------\n", expression);
-    avatar.setExpression(expression);
+    avatar.setExpression(system_config.getAvatarJsonFilename(avatar_count).c_str(), expression);
     Serial.printf("Resume\n");
   }
   vTaskDelay(100);

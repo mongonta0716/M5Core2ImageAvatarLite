@@ -93,6 +93,7 @@ class ImageAvatarConfig {
         params_mouth_s getMouthParameters(uint8_t expression);
         params_eyes_s getEyesParameters(uint8_t expression);
         move_param_s getMoveParameters(uint8_t expression);
+        uint8_t getExpressionMax() { return _max_expresssion; }
 
 };
 
