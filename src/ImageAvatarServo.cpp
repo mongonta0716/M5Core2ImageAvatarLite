@@ -24,10 +24,10 @@ int ImageAvatarServo::checkParam(uint8_t servo_no, int degree) {
     //Serial.printf("checkParam:%d", degree);
     degree += _servo_init[servo_no]->offset;
     if (_servo_init[servo_no]->position_upper < degree) {
-        return _servo_init[servo_no]->position_upper;
+        return _servo_init[servo_no]->position_upper + _servo_init[servo_no]->offset;
     } 
     if (_servo_init[servo_no]->position_lower > degree) {
-        return _servo_init[servo_no]->position_lower;
+        return _servo_init[servo_no]->position_lower + _servo_init[servo_no]->offset;
     }
     return degree;
 }
