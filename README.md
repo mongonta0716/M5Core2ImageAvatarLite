@@ -68,19 +68,18 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 ```
 {
     "avatar_json": {
-        "count": 3,                                       // 切り替えるAvatarの総数(1〜8)
-        "filename" : {
-            "0"  : "/json/M5AvatarLite00.json",           // countで設定した数に対応するAvatar定義を作成
-            "1"  : "/json/M5AvatarLite01.json",
-            "2"  : "/json/M5AvatarLite02.json"            // 3つ以上増やすときは末尾に「,」を追加
+        "filename" : [
+            "/json/M5AvatarLite00.json",           // countで設定した数に対応するAvatar定義を作成
+            "/json/M5AvatarLite01.json",
+            "/json/M5AvatarLite02.json"            // 3つ以上増やすときは末尾に「,」を追加
             // "3" : .... ,
             // .
-            // "7" : "/json/M5AvatarLite07.json"
-        }
+            // "7" : "/json/M5AvatarLite07.json"   // 最大８まで
+        ]
     },
     "bluetooth_device_name" : "ESP32",                    // Bluetoothスピーカーのデバイス名
     "servo_json" : "/json/M5AvatarLiteServo.json",        // サーボの設定ファイル
-    "servo_random_mode" : "false"                         // 通常時にサーボをランダムで動かすかどうか
+    "servo_random_mode" : "true"                         // 起動時にサーボを動かすかどうか
 }
 ```
 
