@@ -270,7 +270,9 @@ void setup() {
   system_config.loadConfig(json_fs, avatar_system_json);
   system_config.printAllParameters();
   M5.Speaker.setVolume(system_config.getVolume());
+  Serial.printf("SystemVolume: %d\n", M5.Speaker.getVolume());
   M5.Speaker.setChannelVolume(m5spk_virtual_channel, system_config.getVolume());
+  Serial.printf("ChannelVolume: %d\n", M5.Speaker.getChannelVolume(m5spk_virtual_channel));
   M5.Lcd.setBrightness(system_config.getLcdBrightness());
 
   
@@ -294,8 +296,7 @@ void setup() {
   avatar.addTask(lipsync, "lipsync");
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
-  M5.Speaker.setChannelVolume(m5spk_virtual_channel, 200);
-  a2dp_sink.start(system_config.getBluetoothDeviceName().c_str(), false);
+  a2dp_sink.start(system_config.getBluetoothDeviceName().c_str(), system_config.getBluetoothReconnect());
   startThreads();
 
 }
@@ -305,11 +306,15 @@ void loop() {
   printFreeHeap();
 #ifdef USE_SERVO
   if (M5.BtnA.pressedFor(2000)) {
+    M5.Speaker.tone(600, 500);
+    delay(500);
+    M5.Speaker.tone(800, 200);
     // サーボチェックをします。
     vTaskSuspend(servoloopTaskHangle); // ランダムな動きを止める。
     servo.check();
     vTaskResume(servoloopTaskHangle);  // ランダムな動きを再開
   }
+#endif
   if (M5.BtnA.wasClicked()) {
     // アバターを変更します。
     avatar_count++;
@@ -317,20 +322,50 @@ void loop() {
       avatar_count = 0;
     }
     Serial.printf("Avatar No:%d\n", avatar_count);
+    M5.Speaker.tone(600, 100);
     avatar.changeAvatar(system_config.getAvatarJsonFilename(avatar_count).c_str());
   }
-  if (M5.BtnB.wasPressed()) {
+
+#ifdef USE_SERVO
+  if (M5.BtnB.pressedFor(2000)) {
     // サーボを動かす＜＞止めるの切り替え
     servo_enable = !servo_enable;
     Serial.printf("BtnB was pressed servo_enable:%d", servo_enable);
     if (servo_enable) {
+      M5.Speaker.tone(500, 200);
+      delay(200);
+      M5.Speaker.tone(700, 200);
+      delay(200);
+      M5.Speaker.tone(1000, 200);
       vTaskResume(servoloopTaskHangle);
     } else {
+      M5.Speaker.tone(1000, 200);
+      delay(200);
+      M5.Speaker.tone(700, 200);
+      delay(200);
+      M5.Speaker.tone(500, 200);
       vTaskSuspend(servoloopTaskHangle);
     }
   }
 #endif
-  if (M5.BtnC.wasPressed()) {
+
+  if (M5.BtnB.wasClicked()) {
+    size_t v = M5.Speaker.getChannelVolume(m5spk_virtual_channel);
+    v += 10;
+    if (v <= 255) {
+      M5.Speaker.setVolume(v);
+      M5.Speaker.setChannelVolume(m5spk_virtual_channel, v);
+      Serial.printf("Volume: %d\n", v);
+      Serial.printf("SystemVolume: %d\n", M5.Speaker.getVolume());
+      M5.Speaker.tone(1000, 100);
+    }
+  }
+
+
+  if (M5.BtnC.pressedFor(2000)) {
+    M5.Speaker.tone(1000, 100);
+    delay(500);
+    M5.Speaker.tone(600, 100);
     // 表情を切り替え
     expression++;
     Serial.printf("ExpressionMax:%d\n", avatar.getExpressionMax());
@@ -340,6 +375,17 @@ void loop() {
     Serial.printf("----------Expression: %d----------\n", expression);
     avatar.setExpression(system_config.getAvatarJsonFilename(avatar_count).c_str(), expression);
     Serial.printf("Resume\n");
+  }
+  if (M5.BtnC.wasClicked()) {
+    size_t v = M5.Speaker.getChannelVolume(m5spk_virtual_channel);
+    v -= 10;
+    if (v > 0) {
+      M5.Speaker.setVolume(v);
+      M5.Speaker.setChannelVolume(m5spk_virtual_channel, v);
+      Serial.printf("Volume: %d\n", v);
+      Serial.printf("SystemVolume: %d\n", M5.Speaker.getVolume());
+      M5.Speaker.tone(800, 100);
+    }
   }
   vTaskDelay(100);
 }

@@ -33,8 +33,9 @@ void ImageAvatarSystemConfig::setSystemConfig(DynamicJsonDocument doc) {
     for (int i=0; i<_avatar_count; i++) {
         _avatar_jsonfiles[i] = avatar_json[i].as<String>();
     }
-    _bluetooth_device_name = doc["bluetooth_device_name"].as<String>(); // "ESP32"
-    _servo_jsonfile = doc["servo_json"].as<String>(); // "/json/M5AvatarLiteServo.json"    _avatar_count = doc["avatar_count"];
+    _bluetooth_device_name = doc["bluetooth_device_name"].as<String>();
+    _bluetooth_reconnect = doc["bluetooth_reconnect"];
+    _servo_jsonfile = doc["servo_json"].as<String>(); 
     _servo_random_mode = doc["servo_random_mode"];
 }
 
@@ -46,6 +47,7 @@ void ImageAvatarSystemConfig::printAllParameters() {
         Serial.printf("Avatar Json FileName:%d :%s\n", i, (const char *)_avatar_jsonfiles[i].c_str());
     }
     Serial.printf("Bluetooth Device Name: %s\n", _bluetooth_device_name);
+    Serial.printf("Bluetooth Reconnect :%s\n", _bluetooth_reconnect ? "true" : "false");
     Serial.printf("Servo Json FileName: %s\n", (const char *)_servo_jsonfile.c_str());
-    Serial.printf("Servo Random Mode:%s\n", _servo_random_mode ? "True" : "False");
+    Serial.printf("Servo Random Mode:%s\n", _servo_random_mode ? "true" : "false");
 }

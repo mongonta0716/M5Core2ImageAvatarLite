@@ -7,6 +7,7 @@
         "/json/M5AvatarLite02.json"
     ],
     "bluetooth_device_name" : "ESP32",
+    "bluetooth_reconnect"   : false,
     "servo_json" : "/json/M5AvatarLiteServo.json",
     "servo_random_mode" : true
 }

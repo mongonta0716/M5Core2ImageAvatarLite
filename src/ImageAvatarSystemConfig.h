@@ -13,6 +13,7 @@ class ImageAvatarSystemConfig {
         uint8_t _avatar_count;                                 // avatar count
         String _avatar_jsonfiles[MAX_AVATAR_NUM];              // json filename
         String _bluetooth_device_name;                         // bluetooth_device_name
+        bool _bluetooth_reconnect;                             // 起動時にBluetoothを再接続するかどうか
         String _servo_jsonfile;                                // servo json filename
         bool _servo_random_mode;                               // servo random mode flag
         void setSystemConfig(DynamicJsonDocument doc);
@@ -26,6 +27,7 @@ class ImageAvatarSystemConfig {
         uint8_t getLcdBrightness() { return _lcd_brightness; };
         uint8_t getAvatarMaxCount() { return _avatar_count; }
         String getBluetoothDeviceName() { return _bluetooth_device_name; }
+        bool getBluetoothReconnect() { return _bluetooth_reconnect; }
         String getAvatarJsonFilename(uint8_t avatar_no) { return _avatar_jsonfiles[avatar_no]; }
         String getServoJsonFilename() { return _servo_jsonfile; }
         bool getServoRandomMode() { return _servo_random_mode; }
