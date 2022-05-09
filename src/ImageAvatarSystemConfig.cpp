@@ -25,6 +25,8 @@ void ImageAvatarSystemConfig::loadConfig(fs::FS& fs, const char *json_filename) 
 
 void ImageAvatarSystemConfig::setSystemConfig(DynamicJsonDocument doc) {
 
+    _volume = doc["volume"];
+    _lcd_brightness = doc["lcd_brightness"];
     JsonArray avatar_json = doc["avatar_json"];
     _avatar_count = avatar_json.size();
 
@@ -37,6 +39,8 @@ void ImageAvatarSystemConfig::setSystemConfig(DynamicJsonDocument doc) {
 }
 
 void ImageAvatarSystemConfig::printAllParameters() {
+    Serial.printf("Volume: %d\n", _volume);
+    Serial.printf("Brightness: %d\n", _lcd_brightness);
     Serial.printf("Avatar Max Count: %d\n", _avatar_count);
     for (int i=0; i<_avatar_count; i++) {
         Serial.printf("Avatar Json FileName:%d :%s\n", i, (const char *)_avatar_jsonfiles[i].c_str());

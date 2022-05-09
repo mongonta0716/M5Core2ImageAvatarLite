@@ -72,9 +72,9 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
             "/json/M5AvatarLite00.json",           // countで設定した数に対応するAvatar定義を作成
             "/json/M5AvatarLite01.json",
             "/json/M5AvatarLite02.json"            // 3つ以上増やすときは末尾に「,」を追加
-            // "3" : .... ,
+            // .... ,
             // .
-            // "7" : "/json/M5AvatarLite07.json"   // 最大８まで
+            // "/json/M5AvatarLite07.json"         // 最大8まで
         ]
     },
     "bluetooth_device_name" : "ESP32",                    // Bluetoothスピーカーのデバイス名

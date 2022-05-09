@@ -135,7 +135,9 @@ void lipsync(void *args) {
     auto buf = a2dp_sink.getBuffer();
     if (buf) {
 #ifdef USE_LED
-      level_led(abs(buf[1])*10/INT16_MAX,abs(buf[0])*10/INT16_MAX);
+      // buf[0]: LEFT
+      // buf[1]: RIGHT
+      level_led(abs(buf[0])*10/INT16_MAX,abs(buf[0])*10/INT16_MAX);
 #endif
       memcpy(raw_data, buf, WAVE_SIZE * 2 * sizeof(int16_t));
       fft.exec(raw_data);
@@ -260,15 +262,17 @@ void setup() {
     spk_cfg.dma_buf_len = 256;
     M5.Speaker.config(spk_cfg);
   }
-  M5.Speaker.setChannelVolume(m5spk_virtual_channel, 150);
   //checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
   xMutex = xSemaphoreCreateMutex();
   SPIFFS.begin();
   SD.begin(GPIO_NUM_4, SPI, 25000000);
-  M5.Lcd.setBrightness(100);
-
+  
   system_config.loadConfig(json_fs, avatar_system_json);
   system_config.printAllParameters();
+  M5.Speaker.setVolume(system_config.getVolume());
+  M5.Speaker.setChannelVolume(m5spk_virtual_channel, system_config.getVolume());
+  M5.Lcd.setBrightness(system_config.getLcdBrightness());
+
   
 #ifdef USE_SERVO
   // 2022.4.26 ServoConfig.jsonを先に読まないと失敗する。（原因不明）

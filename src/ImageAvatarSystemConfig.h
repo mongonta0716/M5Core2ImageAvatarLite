@@ -8,6 +8,8 @@
 
 class ImageAvatarSystemConfig {
     protected:
+        uint8_t _volume;                                       // Initial volume
+        uint8_t _lcd_brightness;                               // brightness of lcd
         uint8_t _avatar_count;                                 // avatar count
         String _avatar_jsonfiles[MAX_AVATAR_NUM];              // json filename
         String _bluetooth_device_name;                         // bluetooth_device_name
@@ -20,6 +22,8 @@ class ImageAvatarSystemConfig {
         void loadConfig(fs::FS& fs, const char *json_filename);
 
         void printAllParameters();
+        uint8_t getVolume() { return _volume; }
+        uint8_t getLcdBrightness() { return _lcd_brightness; };
         uint8_t getAvatarMaxCount() { return _avatar_count; }
         String getBluetoothDeviceName() { return _bluetooth_device_name; }
         String getAvatarJsonFilename(uint8_t avatar_no) { return _avatar_jsonfiles[avatar_no]; }
