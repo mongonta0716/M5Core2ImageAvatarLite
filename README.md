@@ -1,9 +1,6 @@
 # M5Core2ImageAvatarLite
  ImageAvatarLite for M5Stack Core2 and M5Stack Fire
 
-# 開発途中です。
-ドキュメントも行き届いていません。その点はご了承ください。
-
 # 概要
 
 　あらかじめ用意した画像ファイル（BMP)とJSONファイルの設定を組み合わせてAvatarを作成できるアプリです。
@@ -38,11 +35,23 @@ main.cpp -> M5Core2ImageAvatarLite.ino
 # 使い方
 1. SDカードのルートにdataにあるフォルダ(bmp,json)をコピー
 1. プログラムを書き込むとAvatarが起動します。
-1. BtnAを押すとAvatarが切り替わります。
-1. BtnCを押すと表情が切り替わります。(表情が用意してある場合)
 1. Bluetoothスピーカーとして機能します。「ESP32」というデバイスをペアリングすると音を再生可能です。
 
+## ボタン操作
+
+- ボタンA
+    - クリック<br>アバターの切り替え
+    - 長押し<br>サーボテスト
+- ボタンB
+    - クリック<br>ボリュームアップ
+    - 長押し<br>サーボ駆動のON/OFF切り替え
+- ボタンC
+    - クリック<br>ボリュームダウン
+    - 長押し<br>アバターの表情切り替え
+
 ## SDカード上に必要なファイル
+
+dataフォルダ内にあるファイル及びフォルダをSDカードのルートにコピーしてください。
  
  1. - /bmp_slime/<br>BMPファイル(サンプルのbmp_slimeでは全部で11ファイル)
     - /bmp_puipui/<br>
@@ -67,6 +76,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 一番最初に読み込まれる設定ファイルです。サンプルでは3つまで定義してあります。（最大8つ）
 ```
 {
+    "volume" : 100,                                // 起動時のボリューム
+    "lcd_brightness" : 50,                         // LCDの明るさ
     "avatar_json": {
         "filename" : [
             "/json/M5AvatarLite00.json",           // countで設定した数に対応するAvatar定義を作成
@@ -77,9 +88,10 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
             // "/json/M5AvatarLite07.json"         // 最大8まで
         ]
     },
-    "bluetooth_device_name" : "ESP32",                    // Bluetoothスピーカーのデバイス名
-    "servo_json" : "/json/M5AvatarLiteServo.json",        // サーボの設定ファイル
-    "servo_random_mode" : "true"                         // 起動時にサーボを動かすかどうか
+    "bluetooth_device_name" : "ESP32",                   // Bluetoothスピーカーのデバイス名
+    "bluetooth_reconnect" : false,                       // 起動時にBluetoothを再接続するかどうか（接続先が変わる場合はfalse推奨）
+    "servo_json" : "/json/M5AvatarLiteServo.json",       // サーボの設定ファイル
+    "servo_random_mode" : true                           // 起動時にサーボを動かすかどうか
 }
 ```
 
@@ -268,12 +280,7 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
 }
 ```
 
-## カスタマイズ例
-head.bmpをhead_potato.bmpに変更すると、〇ルカーっぽい何かになります。
 
-# 参考にしたリポジトリ
-- [m5stack-avatar](https://github.com/meganetaaan/m5stack-avatar)
-- [M5Stack_WebRadio_Avator](https://github.com/robo8080/M5Stack_WebRadio_Avator)
 
 # サーボについて
 main.cpp冒頭の#define USE_SERVOのコメントを外すとサーボを利用できます。2021/11現在では[ｽﾀｯｸﾁｬﾝ](https://github.com/meganetaaan/stack-chan)での利用を想定しています。
@@ -308,10 +315,14 @@ X軸とY軸の2軸（ｽﾀｯｸﾁｬﾝのパン(x)とチルト(y)）で利�
 }
 ```
 
+# 参考にしたリポジトリ
+- [m5stack-avatar](https://github.com/meganetaaan/m5stack-avatar)
+- [M5Stack_WebRadio_Avator](https://github.com/robo8080/M5Stack_WebRadio_Avator)
+
 # 謝辞
 このソフトを作成するにあたり、動きや構造の元となった[M5Stack-Avatar](https://github.com/meganetaaan/m5stack-avatar)を作成・公開してくださった[meganetaaan](https://github.com/meganetaaan)氏に感謝いたします。
 
-ImageAvatarを実現するにあたり優れたパフォーマンス、機能を持ったLovyanGFXの作者[lovyan03](https://github.com/lovyan03)氏に感謝いたします。
+ImageAvatarを実現するにあたり優れたパフォーマンス、機能を持ったLovyanGFX,M5Unifiedの作者[lovyan03](https://github.com/lovyan03)氏に感謝いたします。
 
 ImageAvatar作成するにあたり、 初期の頃からたくさんのアドバイスを頂き、参考にさせていただいた[M5Stack_WebRadio_Avatar](https://github.com/robo8080/M5Stack_WebRadio_Avator)の作者[robo8080](https://github.com/robo8080)氏に感謝いたします。
 
