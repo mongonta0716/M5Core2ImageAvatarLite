@@ -34,6 +34,9 @@ main.cpp -> M5Core2ImageAvatarLite.ino
 
 # 使い方
 1. SDカードのルートにdataにあるフォルダ(bmp,json)をコピー
+1. jsonフォルダの下記の2ファイルを設定します。
+    - M5AvatarLiteSystem.json
+    - M5AvatarLiteServo.json
 1. プログラムを書き込むとAvatarが起動します。
 1. Bluetoothスピーカーとして機能します。「ESP32」というデバイスをペアリングすると音を再生可能です。
 
