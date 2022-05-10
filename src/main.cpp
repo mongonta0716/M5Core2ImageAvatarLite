@@ -137,7 +137,7 @@ void lipsync(void *args) {
 #ifdef USE_LED
       // buf[0]: LEFT
       // buf[1]: RIGHT
-      level_led(abs(buf[0])*10/INT16_MAX,abs(buf[0])*10/INT16_MAX);
+      level_led(abs(buf[1])*10/INT16_MAX,abs(buf[0])*10/INT16_MAX);
 #endif
       memcpy(raw_data, buf, WAVE_SIZE * 2 * sizeof(int16_t));
       fft.exec(raw_data);
