@@ -2,7 +2,6 @@
 
 namespace m5imageavatar {
 
-#define DEFAULT_STACK_SIZE 2048
 
 DriveContext::DriveContext(ImageAvatarLite *avatar) : avatar{ avatar } {}
 ImageAvatarLite *DriveContext::getAvatar() { return avatar; }
@@ -248,13 +247,13 @@ void ImageAvatarLite::drawTest() {
     execDraw();
 }
 
-void ImageAvatarLite::addTask(TaskFunction_t f, const char* task_name) {
+void ImageAvatarLite::addTask(TaskFunction_t f, const char* task_name, uint8_t task_priority, uint16_t stack_size) {
     DriveContext * ctx = new DriveContext(this);
     xTaskCreateUniversal(f,
                          task_name,
-                         DEFAULT_STACK_SIZE,
+                         stack_size,
                          ctx,
-                         8,
+                         task_priority,
                          NULL,
                          APP_CPU_NUM);
 }
@@ -265,7 +264,7 @@ void ImageAvatarLite::start() {
                          "drawLoop",
                          4096,
                          ctx,
-                         5,
+                         2,
                          &drawTaskHandle,
                          APP_CPU_NUM); //tskNO_AFFINITY); // Core 1を指定しないと不安定
 //    xTaskCreateUniversal(breath,

@@ -4,6 +4,9 @@
 #include "ImageAvatarConfig.h"
 
 namespace m5imageavatar {
+
+#define DEFAULT_STACK_SIZE 2048
+
 class ImageAvatarLite
 {
     private:
@@ -47,7 +50,7 @@ class ImageAvatarLite
         ~ImageAvatarLite(void);
 
         void start();
-        void addTask(TaskFunction_t f, const char* name);
+        void addTask(TaskFunction_t f, const char* name, uint8_t task_priority = 6, uint16_t stack_size = DEFAULT_STACK_SIZE);
         void createSprite();
         void init(M5GFX *gfx, const char* filename, bool is_change, uint8_t expression = 0);
         void drawAll();

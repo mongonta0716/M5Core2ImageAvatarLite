@@ -141,7 +141,9 @@ void lipsync(void *args) {
 #endif
       memcpy(raw_data, buf, WAVE_SIZE * 2 * sizeof(int16_t));
       fft.exec(raw_data);
-      for (size_t bx = 5; bx <= 64; ++bx) { // リップシンクで抽出する範囲はここで指定(低音)0〜64（高音）
+      // リップシンクで抽出する範囲はここで指定(低音)0〜64（高音）
+      // 抽出範囲を広げるとパフォーマンスに影響します。
+      for (size_t bx = 5; bx <= 32; ++bx) { 
         int32_t f = fft.get(bx);
         level += abs(f);
         //Serial.printf("bx:%d, f:%d\n", bx, f) ;
@@ -293,7 +295,7 @@ void setup() {
   String avatar_filename = system_config.getAvatarJsonFilename(avatar_count);
   avatar.init(&gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
-  avatar.addTask(lipsync, "lipsync");
+  avatar.addTask(lipsync, "lipsync", 2);
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
   a2dp_sink.start(system_config.getBluetoothDeviceName().c_str(), system_config.getBluetoothReconnect());
