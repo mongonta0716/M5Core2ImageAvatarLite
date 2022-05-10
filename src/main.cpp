@@ -295,6 +295,8 @@ void setup() {
   String avatar_filename = system_config.getAvatarJsonFilename(avatar_count);
   avatar.init(&gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
+  // audioの再生より、リップシンクを優先するセッティングにしています。
+  // 音のズレが気になるときは下記のlipsyncのtask_priorityを3にしてください。(口パクが遅くなります。)
   avatar.addTask(lipsync, "lipsync", 2);
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
