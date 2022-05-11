@@ -261,7 +261,7 @@ void setup() {
     spk_cfg.task_priority = 1;//configMAX_PRIORITIES - 2;
     spk_cfg.dma_buf_count = 8;
     //spk_cfg.stereo = true;
-    spk_cfg.dma_buf_len = 256;
+    spk_cfg.dma_buf_len = 512;
     M5.Speaker.config(spk_cfg);
   }
   //checkSDUpdater( SD, MENU_BIN, 2000, TFCARD_CS_PIN ); // Filesystem, Launcher bin path, Wait delay
@@ -296,7 +296,8 @@ void setup() {
   avatar.init(&gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
   // audioの再生より、リップシンクを優先するセッティングにしています。
-  // 音のズレが気になるときは下記のlipsyncのtask_priorityを3にしてください。(口パクが遅くなります。)
+  // 音のズレや途切れが気になるときは下記のlipsyncのtask_priorityを3にしてください。(口パクが遅くなります。)
+  // I2Sのバッファ関連の設定を調整する必要がある場合もあり。
   avatar.addTask(lipsync, "lipsync", 2);
   //a2dp_sink.set_avrc_metadata_callback(avrc_metadata_callback);
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
