@@ -1,3 +1,9 @@
+#if defined( ARDUINO )
+#include <Arduino.h>
+#include <SD.h>
+#include <SPIFFS.h>
+#endif
+
 #include <M5Unified.h>
 
 #define SDU_APP_PATH "/M5Core2AvatarLite.bin" // title for SD-Updater UI
