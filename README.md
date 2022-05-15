@@ -17,6 +17,8 @@ src -> M5Core2ImageAvatarLite<br>
 main.cpp -> M5Core2ImageAvatarLite.ino
 
 # 必要なライブラリ
+<b>Arduino-esp32はVer.2.0.3で動作確認しています。</b>
+
 バージョンについては[platformio.ini](platformio.ini)を見てください。
 - [M5Unified](https://github.com/m5stack/M5Unified)
 - [ArduinoJSON](https://github.com/bblanchon/ArduinoJson)
