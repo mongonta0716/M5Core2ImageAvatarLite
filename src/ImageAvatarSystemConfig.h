@@ -16,6 +16,7 @@ class ImageAvatarSystemConfig {
         bool _bluetooth_reconnect;                             // 起動時にBluetoothを再接続するかどうか
         String _servo_jsonfile;                                // servo json filename
         bool _servo_random_mode;                               // servo random mode flag
+        uint32_t _auto_power_off_time;                         // USB給電が停止後、電源OFFするまでの時間(msec)。0だと電源OFFしない。
         void setSystemConfig(DynamicJsonDocument doc);
     public:
         ImageAvatarSystemConfig();
@@ -31,6 +32,7 @@ class ImageAvatarSystemConfig {
         String getAvatarJsonFilename(uint8_t avatar_no) { return _avatar_jsonfiles[avatar_no]; }
         String getServoJsonFilename() { return _servo_jsonfile; }
         bool getServoRandomMode() { return _servo_random_mode; }
+        uint32_t getAutoPowerOffTime() { return _auto_power_off_time; }
 };
 
 

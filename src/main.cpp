@@ -104,6 +104,10 @@ static fft_t fft;
 static constexpr size_t WAVE_SIZE = 320;
 static int16_t raw_data[WAVE_SIZE * 2];
 
+// auto poweroff 
+uint32_t auto_power_off_time = 0;  // USB給電が止まった後自動で電源OFFするまでの時間（msec）。0は電源OFFしない。
+uint32_t last_discharge_time = 0;  // USB給電が止まったときの時間(msec)
+
 // Multi Threads Settings
 TaskHandle_t lipsyncTaskHandle;
 SemaphoreHandle_t xMutex = NULL;
@@ -298,6 +302,7 @@ void setup() {
   turn_off_led();
 #endif
 
+  auto_power_off_time = system_config.getAutoPowerOffTime();
   String avatar_filename = system_config.getAvatarJsonFilename(avatar_count);
   avatar.init(&gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
@@ -396,6 +401,22 @@ void loop() {
       Serial.printf("Volume: %d\n", v);
       Serial.printf("SystemVolume: %d\n", M5.Speaker.getVolume());
       M5.Speaker.tone(800, 100);
+    }
+  }
+  if (M5.Power.Axp192.getACINVolatge() < 3.0f) {
+    // USBからの給電が停止したとき
+    // Serial.println("USBPowerUnPluged.");
+    M5.Power.setLed(0);
+    if ((auto_power_off_time > 0) and (last_discharge_time == 0)) {
+      last_discharge_time = millis();
+    } else if ((auto_power_off_time > 0) and ((millis() - last_discharge_time) > auto_power_off_time)) {
+      M5.Power.powerOff();
+    }
+  } else {
+    //Serial.println("USBPowerPluged.");
+    M5.Power.setLed(80);
+    if (last_discharge_time > 0) {
+      last_discharge_time = 0;
     }
   }
   vTaskDelay(100);

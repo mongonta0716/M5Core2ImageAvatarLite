@@ -37,6 +37,7 @@ void ImageAvatarSystemConfig::setSystemConfig(DynamicJsonDocument doc) {
     _bluetooth_reconnect = doc["bluetooth_reconnect"];
     _servo_jsonfile = doc["servo_json"].as<String>(); 
     _servo_random_mode = doc["servo_random_mode"];
+    _auto_power_off_time = doc["auto_power_off_time"];
 }
 
 void ImageAvatarSystemConfig::printAllParameters() {
@@ -50,4 +51,5 @@ void ImageAvatarSystemConfig::printAllParameters() {
     Serial.printf("Bluetooth Reconnect :%s\n", _bluetooth_reconnect ? "true" : "false");
     Serial.printf("Servo Json FileName: %s\n", (const char *)_servo_jsonfile.c_str());
     Serial.printf("Servo Random Mode:%s\n", _servo_random_mode ? "true" : "false");
+    Serial.printf("AutoPowerOffTime: %d\n", _auto_power_off_time);
 }

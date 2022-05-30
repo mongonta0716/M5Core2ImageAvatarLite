@@ -96,7 +96,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
     "bluetooth_device_name" : "ESP32",                   // Bluetoothスピーカーのデバイス名
     "bluetooth_reconnect" : false,                       // 起動時にBluetoothを再接続するかどうか（接続先が変わる場合はfalse推奨）
     "servo_json" : "/json/M5AvatarLiteServo.json",       // サーボの設定ファイル
-    "servo_random_mode" : true                           // 起動時にサーボを動かすかどうか
+    "servo_random_mode" : true,                          // 起動時にサーボを動かすかどうか
+    "auto_power_off_time" : 0                            // USBからの電源供給が止まった後にCore2の電源を切るまでの時間（0は電源OFFしません。）
 }
 ```
 
