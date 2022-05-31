@@ -46,7 +46,11 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
 #ifdef USE_LED
   #include <FastLED.h>
   #define NUM_LEDS 10
-  #define LED_PIN  25
+#ifdef ARDUINO_M5STACK_FIRE
+  #define LED_PIN 15
+#else
+  #define LED_PIN 25
+#endif
   CRGB leds[NUM_LEDS];
   CRGB led_table[NUM_LEDS / 2] = {CRGB::Blue, CRGB::Green, CRGB::Yellow, CRGB::Orange, CRGB::Red };
   void turn_off_led() {
