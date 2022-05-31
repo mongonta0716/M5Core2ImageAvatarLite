@@ -413,6 +413,7 @@ void loop() {
       M5.Speaker.tone(800, 100);
     }
   }
+#ifndef ARDUINO_M5STACK_FIRE // FireはAxp192ではないのとI2Cが使えないので制御できません。
   if (M5.Power.Axp192.getACINVolatge() < 3.0f) {
     // USBからの給電が停止したとき
     // Serial.println("USBPowerUnPluged.");
@@ -429,5 +430,6 @@ void loop() {
       last_discharge_time = 0;
     }
   }
+#endif
   vTaskDelay(100);
 }
