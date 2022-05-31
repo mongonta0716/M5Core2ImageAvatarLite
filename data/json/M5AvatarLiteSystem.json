@@ -10,5 +10,6 @@
     "bluetooth_reconnect"   : false,
     "servo_json" : "/json/M5AvatarLiteServo.json",
     "servo_random_mode" : true,
-    "auto_power_off_time" : 0
+    "auto_power_off_time" : 0,
+    "led_lr" : 0
 }
