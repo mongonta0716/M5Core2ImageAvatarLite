@@ -1,7 +1,16 @@
 #include "ImageAvatarSystemConfig.h"
 
 
-ImageAvatarSystemConfig::ImageAvatarSystemConfig() {};
+ImageAvatarSystemConfig::ImageAvatarSystemConfig() {
+    _volume = 100;
+    _lcd_brightness = 50;
+    _avatar_count = 0;
+    _bluetooth_reconnect = false;
+    _servo_random_mode = true;
+    _auto_power_off_time = 0;
+    _led_lr = 0;
+};
+
 ImageAvatarSystemConfig::~ImageAvatarSystemConfig() {};
 
 void ImageAvatarSystemConfig::loadConfig(fs::FS& fs, const char *json_filename) {
@@ -38,6 +47,7 @@ void ImageAvatarSystemConfig::setSystemConfig(DynamicJsonDocument doc) {
     _servo_jsonfile = doc["servo_json"].as<String>(); 
     _servo_random_mode = doc["servo_random_mode"];
     _auto_power_off_time = doc["auto_power_off_time"];
+    _led_lr = doc["led_lr"];
 }
 
 void ImageAvatarSystemConfig::printAllParameters() {
@@ -52,4 +62,5 @@ void ImageAvatarSystemConfig::printAllParameters() {
     Serial.printf("Servo Json FileName: %s\n", (const char *)_servo_jsonfile.c_str());
     Serial.printf("Servo Random Mode:%s\n", _servo_random_mode ? "true" : "false");
     Serial.printf("AutoPowerOffTime: %d\n", _auto_power_off_time);
+    Serial.printf("LED LR: %d\n", _led_lr);
 }

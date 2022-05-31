@@ -17,6 +17,7 @@ class ImageAvatarSystemConfig {
         String _servo_jsonfile;                                // servo json filename
         bool _servo_random_mode;                               // servo random mode flag
         uint32_t _auto_power_off_time;                         // USB給電が停止後、電源OFFするまでの時間(msec)。0だと電源OFFしない。
+        uint8_t _led_lr;                                       // LEDの音源を左右どちらにするか(0:stereo, 1:left_only, 2:right_only)
         void setSystemConfig(DynamicJsonDocument doc);
     public:
         ImageAvatarSystemConfig();
@@ -33,6 +34,7 @@ class ImageAvatarSystemConfig {
         String getServoJsonFilename() { return _servo_jsonfile; }
         bool getServoRandomMode() { return _servo_random_mode; }
         uint32_t getAutoPowerOffTime() { return _auto_power_off_time; }
+        uint8_t getLedLR() { return _led_lr; }
 };
 
 
