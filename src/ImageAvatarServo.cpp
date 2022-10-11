@@ -46,7 +46,7 @@ void ImageAvatarServo::init(fs::FS& json_fs, const char* filename) {
 }
 
 void ImageAvatarServo::attach(uint8_t servo_no) {
-    _last_position[servo_no] = _servo_init[servo_no]->position_center + _servo_init[servo_no]->offset;
+    _last_position[servo_no] = _servo_init[servo_no]->position_start + _servo_init[servo_no]->offset;
     Serial.printf("attach:servo_no:%d, pin:%d, last_pos:%d\n", servo_no, _servo_init[servo_no]->pin, _last_position[servo_no]);
     _servo[servo_no].attach(_servo_init[servo_no]->pin,
                             _last_position[servo_no]); 

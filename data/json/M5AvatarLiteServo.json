@@ -5,6 +5,7 @@
             "center" : 90,
             "lower"  : 0,
             "upper"  : 180,
+            "start"  : 90,
             "offset" : 10
         },
         "y_axis": {  
@@ -12,9 +13,9 @@
             "center" : 60,
             "lower"  : 30,
             "upper"  : 90,
+            "start"  : 90,
             "offset" : 0
         }
-
     },
     "servo_enable" : "false"
 }

@@ -12,6 +12,7 @@ typedef struct ServoInitial {
     int position_center;    // servo center degree
     int position_upper;     // servo upper limit degree
     int position_lower;     // servo lower degree
+    int position_start;     // servo start degree
     int offset;             // offset of servo(value from -90 to 90)
 } servo_initial_s;
 
