@@ -1,0 +1,163 @@
+{
+    "expression": [
+        "normal",
+        "sleepy",
+        "grim"
+    ],
+
+    "sprite_info": {
+        "psram": "true",
+        "color_depth": 16,
+        "swap_bytes": 0
+    },
+    "color_info": {
+        "skin"  : "0xFF5B00",
+        "eye_white" : "0xFFFFFF",
+        "transparent"    : "0x00FF00"
+    },
+    "fixed_parts": [
+        {
+            "parts": "body",
+            "x": 0,
+            "y": 0,
+            "w": 320,
+            "h": 240,
+            "filename": "/bmp_girl/head.bmp"
+        }
+    ],
+    "mouth": [
+        {
+            "normal": {
+                "x": 160,
+                "y": 205,
+                "w": 74,
+                "h": 74,
+                "filename": {
+                    "open": "/bmp_girl/mouth_op_normal.bmp",
+                    "close": "/bmp_girl/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.01,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "sleepy": {
+                    "x": 160,
+                    "y": 205,
+                    "w": 74,
+                    "h": 74,
+                    "filename": {
+                        "open": "/bmp_girl/mouth_op_normal.bmp",
+                        "close": "/bmp_girl/mouth_cl_normal.bmp"
+                    },
+                    "minScaleX": 1.0,
+                    "maxScaleX": 1.0,
+                    "minScaleY": 0.01,
+                    "maxScaleY": 1.0
+            }
+        },
+        {
+            "grim": {
+                    "x": 160,
+                    "y": 205,
+                    "w": 74,
+                    "h": 74,
+                    "filename": {
+                        "open": "/bmp_girl/mouth_op_normal.bmp",
+                        "close": "/bmp_girl/mouth_cl_normal.bmp"
+                    },
+                    "minScaleX": 1.0,
+                    "maxScaleX": 1.0,
+                    "minScaleY": 0.01,
+                    "maxScaleY": 1.0
+            }
+        }
+    ],
+    "eye": [
+        {
+            "normal": {
+                "rx": 85,
+                "ry": 130,
+                "lx": 235,
+                "ly": 130,
+                "w": 102,
+                "h": 112,
+                "filename": {
+                    "open": "/bmp_girl/eye_r_op_normal.bmp",
+                    "close": "/bmp_girl/eye_r_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.1,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "sleepy": {
+                "rx": 90,
+                "ry": 130,
+                "lx": 230,
+                "ly": 130,
+                "w": 102,
+                "h": 112,
+                "filename": {
+                    "open": "/bmp_girl/eye_r_op_sleepy.bmp",
+                    "close": "/bmp_girl/eye_r_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.1,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "grim": {
+                "rx": 90,
+                "ry": 130,
+                "lx": 230,
+                "ly": 130,
+                "w": 102,
+                "h": 112,
+                "filename": {
+                    "open": "/bmp_girl/eye_r_op_grim.bmp",
+                    "close": "/bmp_girl/eye_r_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.1,
+                "maxScaleY": 1.0
+            }
+        }
+   ],
+    "init_param": [
+        {
+            "normal": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "sleepy": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "grim": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        }
+    ]
+}

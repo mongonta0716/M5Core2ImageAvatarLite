@@ -1,0 +1,128 @@
+{
+    "expression": [
+        "normal",
+        "surprised"
+    ],
+
+    "sprite_info": {
+        "psram": "true",
+        "color_depth": 16,
+        "swap_bytes": 0
+    },
+    "color_info": {
+        "skin"  : "0xFF5B00",
+        "eye_white" : "0xFFFFFF",
+        "transparent"    : "0x00FF00"
+    },
+    "fixed_parts": [
+        {
+            "parts": "body",
+            "x": 0,
+            "y": 0,
+            "w": 320,
+            "h": 240,
+            "filename": "/bmp_robot/head.bmp"
+        }
+    ],
+    "mouth": [
+        {
+            "normal": {
+                "x": 160,
+                "y": 180,
+                "w": 188,
+                "h": 88,
+                "filename": {
+                    "open": "/bmp_robot/mouth_op_normal.bmp",
+                    "close": "/bmp_robot/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.01,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "surprised": {
+                "x": 160,
+                "y": 210,
+                "w": 188,
+                "h": 88,
+                "filename": {
+                    "open": "/bmp_robot/mouth_op_normal.bmp",
+                    "close": "/bmp_robot/mouth_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.01,
+                "maxScaleY": 1.0
+            }
+        }
+    ],
+    "eye": [
+        {
+            "normal": {
+                "rx": 132,
+                "ry": 40,
+                "lx": 178,
+                "ly": 40,
+                "w": 32,
+                "h": 44,
+                "filename": {
+                    "open": "/bmp_robot/eye_op_normal.bmp",
+                    "close": "/bmp_robot/eye_cl_normal.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.1,
+                "maxScaleY": 1.0
+            }
+        },
+        {
+            "surprised": {
+                "rx": 90,
+                "ry": 120,
+                "lx": 230,
+                "ly": 120,
+                "w": 120,
+                "h": 54,
+                "filename": {
+                    "open": "/bmp_yurei/eye_op_surprised.bmp",
+                    "close": "/bmp_yurei/eye_cl_surprised.bmp"
+                },
+                "minScaleX": 1.0,
+                "maxScaleX": 1.0,
+                "minScaleY": 0.1,
+                "maxScaleY": 1.0
+            }
+        }
+    ],
+    "init_param": [
+        {
+            "normal": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "sad": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        },
+        {
+            "angry": {
+                "eye_l_ratio": 0.0,
+                "eye_r_ratio": 0.0,
+                "mouth_ratio": 0.0,
+                "angle": 0.0,
+                "breath": 0
+            }
+        }
+    ]
+}
