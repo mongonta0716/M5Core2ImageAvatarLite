@@ -2,11 +2,11 @@
     "volume" : 100,
     "lcd_brightness" : 100,
     "avatar_json": [
-        "/json/M5AvatarLite00_slime.json",
-        "/json/M5AvatarLite01_puipui.json",
-        "/json/M5AvatarLite02_jacko.json",
-        "/json/M5AvatarLite03_girl.json",
-        "/json/M5AvatarLite04_robot.json"
+        "/json/M5AvatarLite00slime.json",
+        "/json/M5AvatarLite01puipui.json",
+        "/json/M5AvatarLite02jacko.json",
+        "/json/M5AvatarLite03girl.json",
+        "/json/M5AvatarLite04robot.json"
     ],
     "bluetooth_device_name" : "ESP32",
     "bluetooth_reconnect"   : false,
