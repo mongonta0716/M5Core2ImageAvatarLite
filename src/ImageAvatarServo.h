@@ -1,6 +1,7 @@
 #ifndef _IMAGEAVATAR_SERVO_H_
 #define _IMAGEAVATAR_SERVO_H_
 
+#include <FS.h>
 #include "ImageAvatarServoConfig.h"
 
 enum Servos {
