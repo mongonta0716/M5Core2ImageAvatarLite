@@ -2,6 +2,7 @@
 #define _IMAGEAVATARCONFIG_H_
 
 #include <ArduinoJson.h> // https://github.com/bblanchon/ArduinoJson
+#include <FS.h>
 #include <M5Unified.h>
 
 #define RIGHT true

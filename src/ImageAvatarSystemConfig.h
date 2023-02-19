@@ -2,6 +2,7 @@
 #define _IMAGEAVATAR_SYSTEM_CONFIG_H_
 
 #include <ArduinoJson.h> // https://github.com/bblanchon/ArduinoJson
+#include <FS.h>
 #include <M5Unified.h>
 
 #define MAX_AVATAR_NUM 8  // 最大8個のAvatar
