@@ -2,6 +2,8 @@
 #define _IMAGEAVATARLITE_H_
 
 #include "ImageAvatarConfig.h"
+#include <SD.h>
+#include <SPI.h>
 
 namespace m5imageavatar {
 

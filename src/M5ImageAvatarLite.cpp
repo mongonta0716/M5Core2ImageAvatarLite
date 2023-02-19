@@ -74,7 +74,9 @@ lgfx::rgb565_t ImageAvatarLite::convertColorCode(uint32_t code) {
 
 void ImageAvatarLite::init(M5GFX *gfx, const char* filename, bool is_change,
                            uint8_t expression) {
+    SD.begin(GPIO_NUM_4, SPI, 25000000);
     loadConfig(*_json_fs, filename);
+    SD.end();
     this->_gfx = gfx;
     this->_filename = filename;
     _lcd_sp      = new M5Canvas(_gfx);
@@ -100,6 +102,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
         deleteSprites();
     }
     Serial.printf("initSprites:%s\n", _filename);
+    SD.begin(GPIO_NUM_4, SPI, 25000000);
     loadConfig(*_json_fs, _filename);
     _config.printAllParameters();
     _spcommon = _config.getSpriteCommonParameters();
@@ -154,6 +157,7 @@ void ImageAvatarLite::initSprites(bool is_change) {
     _lcd_sp->setColorDepth(_spcommon.color_depth);
     _lcd_sp->setSwapBytes(_spcommon.swap_bytes);
     _lcd_sp->createSprite(_gfx->width(), _gfx->height());
+    SD.end();
 
 
 }

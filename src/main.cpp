@@ -1,9 +1,14 @@
 #if defined( ARDUINO )
 #include <Arduino.h>
+#include <FS.h>
 #include <SD.h>
 #include <SPIFFS.h>
 #endif
 
+#define M5MODULEDISPLAY_LOGICAL_WIDTH  320  // width
+#define M5MODULEDISPLAY_LOGICAL_HEIGHT 240  // height
+#define M5MODULEDISPLAY_REFRESH_RATE    60  // refresh rate
+#include <M5ModuleDisplay.h>
 #include <M5Unified.h>
 
 #define SDU_APP_PATH "/M5Core2AvatarLite.bin" // title for SD-Updater UI
@@ -22,7 +27,8 @@
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
 
-M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
+//M5GFX &gfx( M5.Lcd ); // aliasing is better than spawning two instances of LGFX
+
 
 // JSONファイルとBMPファイルを置く場所を切り替え
 // 開発時はSPIFFS上に置いてUploadするとSDカードを抜き差しする手間が省けます。
@@ -52,7 +58,13 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
   #define LED_PIN 25
 #endif
   CRGB leds[NUM_LEDS];
-  CRGB led_table[NUM_LEDS / 2] = {CRGB::Blue, CRGB::Green, CRGB::Yellow, CRGB::Orange, CRGB::Red };
+
+  CHSV red (0, 255, 255);
+  CHSV green (95, 255, 255);
+  CHSV blue (160, 255, 255);
+  CHSV magenta (210, 255, 255);
+  CHSV yellow (45, 255, 255);
+  CHSV hsv_table[5] = { blue, green, yellow, magenta, red };
   void turn_off_led() {
     // Now turn the LED off, then pause
     for(int i=0;i<NUM_LEDS;i++) leds[i] = CRGB::Black;
@@ -70,10 +82,10 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
     
     clear_led_buff(); 
     for(int i=0;i<level1;i++){
-      leds[NUM_LEDS/2-1-i] = led_table[i];
+      fill_gradient(leds, 0, hsv_table[i], 4, hsv_table[0] );
     }
     for(int i=0;i<level2;i++){
-      leds[i+NUM_LEDS/2] = led_table[i];
+      fill_gradient(leds, 5, hsv_table[0], 9, hsv_table[i] );
     }
     FastLED.show();
   }
@@ -272,15 +284,20 @@ void startThreads() {
 
 void setup() {
   auto cfg = M5.config();
+  cfg.external_display.module_display = true;
+  cfg.external_speaker.module_display = true;
 #ifdef ARDUINO_M5STACK_FIRE
   cfg.internal_imu = false; // サーボの誤動作防止(Fireは21,22を使うので干渉するため)
 #endif
   M5.begin(cfg);
 
+#ifdef ARDUINO_M5STACK_FIRE
+  M5.In_I2C.release(); // サーボの誤動作防止(Fireは21,22を使うので干渉するため)
+#endif
   { /// custom setting
     auto spk_cfg = M5.Speaker.config();
     /// Increasing the sample_rate will improve the sound quality instead of increasing the CPU load.
-    spk_cfg.sample_rate = 96000; // default:64000 (64kHz)  e.g. 48000 , 50000 , 80000 , 96000 , 100000 , 128000 , 144000 , 192000 , 200000
+    spk_cfg.sample_rate = 48000; // default:64000 (64kHz)  e.g. 48000 , 50000 , 80000 , 96000 , 100000 , 128000 , 144000 , 192000 , 200000
     spk_cfg.task_pinned_core = PRO_CPU_NUM;//APP_CPU_NUM;
     spk_cfg.task_priority = 1;//configMAX_PRIORITIES - 2;
     spk_cfg.dma_buf_count = 8;
@@ -295,11 +312,13 @@ void setup() {
   
   system_config.loadConfig(json_fs, avatar_system_json);
   system_config.printAllParameters();
+  SD.end();
   M5.Speaker.setVolume(system_config.getVolume());
   Serial.printf("SystemVolume: %d\n", M5.Speaker.getVolume());
   M5.Speaker.setChannelVolume(m5spk_virtual_channel, system_config.getVolume());
   Serial.printf("ChannelVolume: %d\n", M5.Speaker.getChannelVolume(m5spk_virtual_channel));
   M5.Lcd.setBrightness(system_config.getLcdBrightness());
+  M5.setPrimaryDisplay({ m5gfx::board_M5ModuleDisplay,m5gfx::board_M5Stack, m5gfx::board_M5StackCore2});
 
   
 #ifdef USE_SERVO
@@ -318,7 +337,8 @@ void setup() {
 
   auto_power_off_time = system_config.getAutoPowerOffTime();
   String avatar_filename = system_config.getAvatarJsonFilename(avatar_count);
-  avatar.init(&gfx, avatar_filename.c_str(), false, 0);
+  M5GFX* gfx = &M5.Display;
+  avatar.init(gfx, avatar_filename.c_str(), false, 0);
   avatar.start();
   // audioの再生より、リップシンクを優先するセッティングにしています。
   // 音のズレや途切れが気になるときは下記のlipsyncのtask_priorityを3にしてください。(口パクが遅くなります。)
