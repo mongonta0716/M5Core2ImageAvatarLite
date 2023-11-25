@@ -18,6 +18,7 @@
 
 // M5GoBottomのLEDを使わない場合は下記の1行をコメントアウトしてください。
 #define USE_LED
+//#define USE_LED_OUT
 
 // デバッグしたいときは下記の１行コメントアウトしてください。
 //#define DEBUG
@@ -44,24 +45,44 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
 #endif
 
 #ifdef USE_LED
-  #include <FastLED.h>
+   #include <FastLED.h>
   #define NUM_LEDS 10
+  #ifdef USE_LED_OUT
+  #define LED_PIN_OUT 26
+  #define NUM_LED_OUT 37
+  #endif 
 #ifdef ARDUINO_M5STACK_FIRE
   #define LED_PIN 15
 #else
   #define LED_PIN 25
 #endif
   CRGB leds[NUM_LEDS];
-  CRGB led_table[NUM_LEDS / 2] = {CRGB::Blue, CRGB::Green, CRGB::Yellow, CRGB::Orange, CRGB::Red };
+  #ifdef USE_LED_OUT
+  CRGB leds_out[NUM_LED_OUT];
+  #endif
+
+  CHSV red (0, 255, 255);
+  CHSV green (95, 255, 255);
+  CHSV blue (160, 255, 255);
+  CHSV magenta (210, 255, 255);
+  CHSV yellow (45, 255, 255);
+  CHSV hsv_table[5] = { blue, green, yellow, magenta, red };
+  CHSV hsv_table_out[5] = { blue, green, yellow, magenta, red }; //red, magenta, yellow, green, blue };
   void turn_off_led() {
     // Now turn the LED off, then pause
     for(int i=0;i<NUM_LEDS;i++) leds[i] = CRGB::Black;
+    #ifdef USE_LED_OUT
+    for(int i=0;i<NUM_LED_OUT;i++) leds_out[i] = CRGB::Black;
+    #endif
     FastLED.show();  
   }
 
   void clear_led_buff() {
     // Now turn the LED off, then pause
     for(int i=0;i<NUM_LEDS;i++) leds[i] =  CRGB::Black;
+    #ifdef USE_LED_OUT
+    for(int i=0;i<NUM_LED_OUT;i++) leds_out[i] = CRGB::Black;
+    #endif
   }
 
   void level_led(int level1, int level2) {  
@@ -70,13 +91,20 @@ ImageAvatarLite avatar(json_fs, bmp_fs);
     
     clear_led_buff(); 
     for(int i=0;i<level1;i++){
-      leds[NUM_LEDS/2-1-i] = led_table[i];
+      fill_gradient(leds, 0, hsv_table[i], 4, hsv_table[0] );
+      #ifdef USE_LED_OUT
+      fill_gradient(leds_out, 0, hsv_table_out[0], 18, hsv_table_out[i] );
+      #endif
     }
     for(int i=0;i<level2;i++){
-      leds[i+NUM_LEDS/2] = led_table[i];
+      fill_gradient(leds, 5, hsv_table[0], 9, hsv_table[i] );
+      #ifdef USE_LED_OUT
+      fill_gradient(leds_out, 19, hsv_table_out[i], 36, hsv_table_out[0] );
+      #endif
     }
     FastLED.show();
   }
+
 #endif
 
 
@@ -272,6 +300,7 @@ void startThreads() {
 
 void setup() {
   auto cfg = M5.config();
+  cfg.output_power = false;
 #ifdef ARDUINO_M5STACK_FIRE
   cfg.internal_imu = false; // サーボの誤動作防止(Fireは21,22を使うので干渉するため)
 #endif
@@ -309,7 +338,10 @@ void setup() {
   servo.attachAll();
 #endif
 #ifdef USE_LED
-  FastLED.addLeds<SK6812, LED_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
+  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
+  #ifdef USE_LED_OUT
+  FastLED.addLeds<WS2812, LED_PIN_OUT, GRB>(leds_out, NUM_LED_OUT);
+  #endif
   FastLED.setBrightness(32);
   level_led(5, 5);
   delay(1000);
@@ -418,7 +450,7 @@ void loop() {
     }
   }
 #ifndef ARDUINO_M5STACK_FIRE // FireはAxp192ではないのとI2Cが使えないので制御できません。
-  if (M5.Power.Axp192.getACINVolatge() < 3.0f) {
+  if (M5.Power.isCharging() == false) {
     // USBからの給電が停止したとき
     // Serial.println("USBPowerUnPluged.");
     M5.Power.setLed(0);
@@ -435,5 +467,5 @@ void loop() {
     }
   }
 #endif
-  vTaskDelay(100);
+  vTaskDelay(50);
 }
