@@ -97,6 +97,13 @@ void ImageAvatarConfig::setEyesParameters(DynamicJsonDocument doc) {
             _eyes[i].max_scaleX = elem["maxScaleX"];
             _eyes[i].min_scaleY = elem["minScaleY"];
             _eyes[i].max_scaleY = elem["maxScaleY"];
+            if (elem["invert"].isNull()) {
+                // キーが存在しない場合
+                _eyes[i].invert = true;
+            } else {
+                _eyes[i].invert = elem["invert"];
+            }
+
         }
     }
 }

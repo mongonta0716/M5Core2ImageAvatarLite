@@ -58,6 +58,7 @@ typedef struct SpriteParamsEyes {
     float max_scaleX;
     float min_scaleY;
     float max_scaleY;
+    bool invert = true;
 } params_eyes_s;
 
 typedef struct MoveParam {

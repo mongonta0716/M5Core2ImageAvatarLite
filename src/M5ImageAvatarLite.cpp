@@ -176,7 +176,11 @@ void ImageAvatarLite::drawHead() {
 void ImageAvatarLite::drawEyes() {
     params_eyes_s p_eyes = _config.getEyesParameters(_expression);
     // 左目の描画
-    // 左目は左右反転する。
+    // 左目はinvertパラメータにより左右反転する。
+    float left_eye_invert = 1.0; // invert false
+    if (p_eyes.invert) {
+        left_eye_invert = -1.0; // invert true
+    }
     if (_mv.eye_l_ratio < p_eyes.min_scaleY) {
         _eye_cl_sp->pushRotateZoom(_eye_l_sp,
             p_eyes.left.w / 2, p_eyes.left.h / 2,
@@ -188,7 +192,7 @@ void ImageAvatarLite::drawEyes() {
     }
     _eye_l_sp->pushRotateZoom(_lcd_sp,
                              p_eyes.left.x, p_eyes.left.y + _mv.breath,
-                             0, -1.0, 1.0, _tp_color);
+                             0, left_eye_invert, 1.0, _tp_color);
 
     // 右目の描画
     if (_mv.eye_r_ratio < p_eyes.min_scaleY) {

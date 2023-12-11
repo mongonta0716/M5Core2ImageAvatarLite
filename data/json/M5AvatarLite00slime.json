@@ -91,7 +91,8 @@
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
                 "minScaleY": 0.3,
-                "maxScaleY": 1.0
+                "maxScaleY": 1.0,
+                "invert"   : true
             }
         },
         {
@@ -109,7 +110,8 @@
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
                 "minScaleY": 0.3,
-                "maxScaleY": 1.0
+                "maxScaleY": 1.0,
+                "invert"   : true
             }
         },
         {
@@ -127,7 +129,8 @@
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
                 "minScaleY": 0.3,
-                "maxScaleY": 1.0
+                "maxScaleY": 1.0,
+                "invert"   : true
             }
         }
     ],
