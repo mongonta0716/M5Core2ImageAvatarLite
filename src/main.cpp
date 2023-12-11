@@ -139,6 +139,8 @@ static int16_t raw_data[WAVE_SIZE * 2];
 // auto poweroff 
 uint32_t auto_power_off_time = 0;  // USB給電が止まった後自動で電源OFFするまでの時間（msec）。0は電源OFFしない。
 uint32_t last_discharge_time = 0;  // USB給電が止まったときの時間(msec)
+uint32_t power_check_interval = 10000; // 充電状態をチェックする時間
+uint32_t last_power_check_time = 0; // 最後にチェックした時間
 
 // Multi Threads Settings
 TaskHandle_t lipsyncTaskHandle;
@@ -300,7 +302,7 @@ void startThreads() {
 
 void setup() {
   auto cfg = M5.config();
-  cfg.output_power = false;
+  cfg.output_power = true;
 #ifdef ARDUINO_M5STACK_FIRE
   cfg.internal_imu = false; // サーボの誤動作防止(Fireは21,22を使うので干渉するため)
 #endif
@@ -360,6 +362,7 @@ void setup() {
   //a2dp_sink.setHvtEventCallback(hvt_event_callback);
   a2dp_sink.start(system_config.getBluetoothDeviceName().c_str(), system_config.getBluetoothReconnect());
   startThreads();
+  last_power_check_time = millis();
 
 }
 
@@ -450,20 +453,25 @@ void loop() {
     }
   }
 #ifndef ARDUINO_M5STACK_FIRE // FireはAxp192ではないのとI2Cが使えないので制御できません。
-  if (M5.Power.isCharging() == false) {
-    // USBからの給電が停止したとき
-    // Serial.println("USBPowerUnPluged.");
-    M5.Power.setLed(0);
-    if ((auto_power_off_time > 0) and (last_discharge_time == 0)) {
-      last_discharge_time = millis();
-    } else if ((auto_power_off_time > 0) and ((millis() - last_discharge_time) > auto_power_off_time)) {
-      M5.Power.powerOff();
-    }
-  } else {
-    //Serial.println("USBPowerPluged.");
-    M5.Power.setLed(80);
-    if (last_discharge_time > 0) {
-      last_discharge_time = 0;
+  if ((millis()-last_power_check_time) > power_check_interval) {
+    if (M5.Power.Axp192.getACINVolatge() < 3.0f) {
+      // USBからの給電が停止したとき
+      // Serial.println("USBPowerUnPluged.");
+      M5.Power.setLed(0);
+      if ((auto_power_off_time > 0) and (last_discharge_time == 0)) {
+        M5.Speaker.tone(1000, 100);
+        delay(500);
+        M5.Speaker.tone(800, 100);
+        last_discharge_time = millis();
+      } else if ((auto_power_off_time > 0) and ((millis() - last_discharge_time) > auto_power_off_time)) {
+        M5.Power.powerOff();
+      }
+    } else {
+      //Serial.println("USBPowerPluged.");
+      M5.Power.setLed(80);
+      if (last_discharge_time > 0) {
+        last_discharge_time = 0;
+      }
     }
   }
 #endif
