@@ -215,7 +215,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "minScaleX": 1.0,     // 未使用
                 "maxScaleX": 1.0,     // 未使用
                 "minScaleY": 0.3,     // 拡大倍率がこれより小さくなると閉じる
-                "maxScaleY": 1.0      // 未使用
+                "maxScaleY": 1.0,     // 未使用
+                "invert"   : true     // 左目表示の際に反転するかどうかを指定(true: 反転する。false: 反転しない)
             }
         },
         {
@@ -233,7 +234,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
                 "minScaleY": 0.3,
-                "maxScaleY": 1.0
+                "maxScaleY": 1.0,
+                "invert"   : false
             }
         },
         {
@@ -251,7 +253,8 @@ fs::FS bmp_fs  = SD; // BMPファイルの収納場所(SPIFFS or SD)
                 "minScaleX": 1.0,
                 "maxScaleX": 1.0,
                 "minScaleY": 0.3,
-                "maxScaleY": 1.0
+                "maxScaleY": 1.0,
+                "invert"   : true
             }
         }
     ],
